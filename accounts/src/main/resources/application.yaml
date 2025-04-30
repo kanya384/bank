@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: accounts
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/${PG_DB}
+    username: ${PG_USER}
+    password: ${PG_PASSWORD}
+  jpa:
+    show-sql: true
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/${PG_DB}
+    user: ${PG_USER}
+    password: ${PG_PASSWORD}
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
