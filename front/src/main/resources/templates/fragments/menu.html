@@ -1,0 +1,49 @@
+<div th:fragment="menu (active)" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
+     style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">Банк</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li>
+            <a th:href="${'/'}"
+               th:class="${#strings.equals(active, 'accounts')}? 'nav-link active' : 'nav-link text-white'">
+                Счета
+            </a>
+        </li>
+        <li>
+            <a th:href="${'/cash'}"
+               th:class="${#strings.equals(active, 'cash')}? 'nav-link active' : 'nav-link text-white'">
+                Наличные
+            </a>
+        </li>
+        <li>
+            <a th:href="${'/transfer-self'}"
+               th:class="${#strings.equals(active, 'transfer-self')}? 'nav-link active' : 'nav-link text-white'">
+                Перевод между своими счетами
+            </a>
+        </li>
+        <li>
+            <a th:href="${'/transfer-other'}"
+               th:class="${#strings.equals(active, 'transfer-other')}? 'nav-link active' : 'nav-link text-white'">
+                Перевод другому человеку
+            </a>
+        </li>
+        <li>
+            <a th:href="${'/exchange-rates'}"
+               th:class="${#strings.equals(active, 'exchange-rates')}? 'nav-link active' : 'nav-link text-white'">
+                Курсы валют
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="${'/profile'}"
+               th:class="${#strings.equals(active, 'profile')}? 'nav-link active' : 'nav-link text-white'">
+                Профиль
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div>
+        <a class="text-white" href="/logout">Выйти</a>
+    </div>
+</div>

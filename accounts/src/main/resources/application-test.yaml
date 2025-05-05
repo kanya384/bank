@@ -1,20 +1,18 @@
 server:
   port: 9000
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/${PG_DB}
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: r2dbc:postgresql://localhost:5432/test
+    username: test
+    password: test
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://localhost:5432/${PG_DB}
-    user: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/test
+    user: test
+    password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:

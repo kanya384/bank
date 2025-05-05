@@ -1,0 +1,11 @@
+img{
+     margin-right: 20px;
+     max-height: 250px;
+     width: 100%;
+     object-fit: contain;
+}
+
+.price-text{
+    color: #10c44c;
+    font-weight: 700;
+}

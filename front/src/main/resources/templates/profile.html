@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Главная страница</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div th:replace="fragments/menu :: menu (active = 'profile')"></div>
+    <div style="padding: 30px; width: 100%">
+        <div class="d-flex flex-column" style="width: 100%">
+            <div class="mb-2">
+                <h5>Редактирование профиля <span th:text="${user.login}"></span></h5>
+            </div>
+            <div class="mb-2">
+                <h6>Сменить пароль</h6>
+            </div>
+            <form
+                    th:action="@{'/user/' + ${user.id}} + '/change-password'"
+                    method="post"
+            >
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="password">Пароль</label>
+                    <input type="text" id="password" name="password" class="form-control"
+                           placeholder="Введите пароль"/>
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="password_approve">Подтверждение пароля</label>
+                    <input type="text" id="password_approve" name="password_approve" class="form-control"
+                           placeholder="Введите подтверждение пароля"/>
+                </div>
+                <div class="alert alert-danger" id="alert_pass" role="alert" style="display:none">
+                    Пароли не совпадают!
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button id="btn_pass" type="submit" disabled="disabled" class="btn btn-primary btn-block mb-4">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+            <hr/>
+            <div class="mb-2">
+                <h6>Редакитрование информации о пользователе</h6>
+            </div>
+            <form
+                    th:action="@{'/user/' + ${user.id}} + '/update'"
+                    method="post"
+            >
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="surname">Фамилия</label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="Введите фамилию"
+                           th:value="${user.surname}"/>
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="name">Имя</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Введите имя"
+                           th:value="${user.name}"/>
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Введите email"
+                           th:value="${user.email}"/>
+                </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="birth">Дата рождения</label>
+                    <input type="date" id="birth" name="birth" class="form-control" placeholder="Введите дату рождения"
+                           th:value="${user.birth}"/>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary btn-block mb-4">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<script>
+    document.querySelector("#password").addEventListener('input', e => {
+        if (e.target.value == document.querySelector("#password_approve").value) {
+            document.querySelector("#alert_pass").style.display = 'none'
+            document.querySelector("#btn_pass").disabled = false
+        } else {
+            document.querySelector("#alert_pass").style.display = 'block'
+            document.querySelector("#btn_pass").disabled = true
+        }
+    })
+
+    document.querySelector("#password_approve").addEventListener('input', e => {
+        if (e.target.value == document.querySelector("#password").value) {
+            document.querySelector("#alert_pass").style.display = 'none'
+            document.querySelector("#btn_pass").disabled = false
+        } else {
+            document.querySelector("#alert_pass").style.display = 'block'
+            document.querySelector("#btn_pass").disabled = true
+        }
+    })
+</script>
+</body>
+</html>

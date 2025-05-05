@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Регистрация пользователя</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="col-12 d-flex justify-content-center">
+    <div class="card" style="margin-top:15%">
+        <div class="card-body">
+            <div class="row">
+                <h4>Регистрация</h4>
+                <form
+                        th:action="@{/register}"
+                        method="post"
+                >
+                    <div class="form-group mt-3">
+                        <label for="login">Введите логин</label>
+                        <input type="text" class="form-control" id="login" name="login" aria-describedby="login"
+                               placeholder="Введите логин"/>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="password">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Введите пароль"/>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="surname">Фамилия</label>
+                        <input type="text" class="form-control" id="surname" name="surname"
+                               placeholder="Введите фамилию"/>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="name">Имя</label>
+                        <input type="text" class="form-control" id="name" name="name"
+                               placeholder="Введите имя"/>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="Введите email"/>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="birth">Дата рождения</label>
+                        <input type="date" class="form-control" id="birth" name="birth"
+                               placeholder="Введите имя"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-5">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

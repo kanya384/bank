@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Упс, что-то пошло не так!</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<section class="h-100">
+    <div class="container h-100 py-5">
+        <div class="d-flex flex-column justify-content-center align-items-center" style="margin-top:20%">
+            <h1>Упс, что-то пошло не так!</h1>
+            <h5>Код ошибки: <span style="color: red" th:text="${error.code}"></span></h5>
+            <span>Текст ошибки: <span th:text="${error.text}"></span></span>
+        </div>
+    </div>
+</section>
+</body>
+</html>

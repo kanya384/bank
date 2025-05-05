@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Главная страница</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div th:replace="fragments/menu :: menu (active = 'accounts')"></div>
+    <div style="padding: 30px; width: 100%">
+        <div class="d-flex flex-column" style="width: 100%">
+            <div class="mb-2">
+                <h5>Список открытых счетов</h5>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 pb-5">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID счета</th>
+                        <th scope="col">Баланс</th>
+                        <th scope="col">Валюта</th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account : ${accounts}">
+                        <th scope="row" th:text="${account.id}"></th>
+                        <td th:text="${account.amount}"></td>
+                        <td th:text="${account.currency}"></td>
+                        <td>
+                            <form
+                                    th:action="@{'/accounts/'+${account.id}+'/delete'}"
+                                    method="post"
+                            >
+                                <button type="submit" class="btn btn-primary">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr/>
+            <div class="mb-2">
+                <h6>Открыть счет</h6>
+            </div>
+            <span th:if="${#lists.size(currencyList) == 0}">Нет доступных счетов для открытия</span>
+            <form
+                    th:action="@{'/accounts'}"
+                    method="post"
+                    th:if="${#lists.size(currencyList) != 0}"
+            >
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="currency">Валюта</label>
+                    <select class="form-select" id="currency" name="currency">
+                        <option th:each="currency : ${currencyList}"
+                                th:value="${currency}"
+                                th:text="${currency}">
+                        </option>
+                    </select>
+                </div>
+                <input type="hidden" id="userId" name="userId" class="form-control" th:value="${userId}"/>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary btn-block mb-4">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>
