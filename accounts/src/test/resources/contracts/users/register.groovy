@@ -1,4 +1,4 @@
-package contracts
+package contracts.users
 
 
 import org.springframework.cloud.contract.spec.Contract
@@ -31,7 +31,7 @@ Contract.make {
         }
 
         body([
-                id      : value(alphaNumeric()),
+                id      : value(anyNumber()),
                 name    : "username",
                 surname : "surname",
                 email   : "test99@mail.ru",

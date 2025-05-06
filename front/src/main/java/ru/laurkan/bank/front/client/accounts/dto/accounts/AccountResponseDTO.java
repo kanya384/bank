@@ -1,9 +1,10 @@
 package ru.laurkan.bank.front.client.accounts.dto.accounts;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -12,6 +13,8 @@ public class AccountResponseDTO {
     private Long userId;
     private String currency;
     private Double amount;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate modifiedAt;
 }

@@ -1,19 +1,19 @@
-package contracts
+package contracts.users
 
 
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "Смена пароля пользователя"
+    description "Ищет пользователя по логину"
     request {
-        method 'PUT'
-        url '/user/change-password/1'
+        method 'POST'
+        url '/user/find-by-login'
         headers {
             contentType(applicationJson())
         }
 
         body(
-                password: "password"
+                login: "user"
         )
     }
 

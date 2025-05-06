@@ -1,6 +1,8 @@
 package ru.laurkan.bank.front.client.accounts;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,12 +12,14 @@ import reactor.core.publisher.Mono;
 import ru.laurkan.bank.front.client.accounts.dto.accounts.AccountResponseDTO;
 import ru.laurkan.bank.front.client.accounts.dto.accounts.CreateAccountRequestDTO;
 import ru.laurkan.bank.front.client.accounts.dto.user.*;
+import ru.laurkan.bank.front.exception.RegistrationException;
 
 
 @Component
 @RequiredArgsConstructor
 public class AccountsClient {
-    private final String BASE_URL = "http://localhost:8090/accounts";
+    @Value("${clients.accounts.uri}")
+    private String BASE_URL;
     private final WebClient webClient;
 
     public Mono<UserResponseDTO> findByLogin(FindByLoginRequestDTO requestDTO) {
@@ -34,6 +38,10 @@ public class AccountsClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDTO)
                 .retrieve()
+                .onStatus(
+                        HttpStatus.BAD_REQUEST::equals,
+                        resp -> resp.bodyToMono(String.class).map(RegistrationException::new)
+                )
                 .bodyToMono(UserResponseDTO.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
     }

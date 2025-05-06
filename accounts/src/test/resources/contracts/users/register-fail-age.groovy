@@ -1,4 +1,4 @@
-package contracts
+package contracts.users
 
 
 import org.springframework.cloud.contract.spec.Contract
@@ -26,5 +26,9 @@ Contract.make {
     response {
         status 400
 
+        body(
+                "code": "BAD_REQUEST",
+                "message": "Ошибка(-и) валидации: birth - Пользователь должен быть совершеннолетним"
+        )
     }
 }
