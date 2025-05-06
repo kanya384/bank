@@ -16,6 +16,7 @@
         <module>accounts</module>
         <module>front</module>
         <module>gateway</module>
+        <module>blocker</module>
     </modules>
     <packaging>pom</packaging>
 
