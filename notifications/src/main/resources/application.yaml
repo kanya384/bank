@@ -1,0 +1,35 @@
+server:
+  port: 9020
+mail:
+  config:
+    import: optional:file:.env[.properties]
+  username: ${mail.username}
+  password: ${mail.password}
+  smtp:
+    host: smtp.mail.ru
+    port: 465
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: accounts
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/notifications
+    username: ${PG_USER}
+    password: ${PG_PASSWORD}
+  jpa:
+    show-sql: true
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/notifications
+    user: ${PG_USER}
+    password: ${PG_PASSWORD}
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG

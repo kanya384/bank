@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_email_notification_table" author="laurkan">
+        <preConditions>
+            <not>
+                <tableExists tableName="email_notification"/>
+            </not>
+        </preConditions>
+        <createTable tableName="email_notification">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="recipient" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="email_notification"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
