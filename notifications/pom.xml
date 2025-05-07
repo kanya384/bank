@@ -24,7 +24,7 @@
             <artifactId>angus-mail</artifactId>
             <version>2.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
@@ -88,7 +88,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <testFramework>JUNIT5</testFramework>
-                    <packageWithBaseClasses>ru.laurkan.bank.accounts.contracts</packageWithBaseClasses>
+                    <packageWithBaseClasses>ru.laurkan.bank.notifications.contracts</packageWithBaseClasses>
                     <failOnNoContracts>false</failOnNoContracts>
                     <testMode>EXPLICIT</testMode>
                 </configuration>

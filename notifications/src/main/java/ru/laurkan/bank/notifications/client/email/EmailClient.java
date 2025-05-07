@@ -6,28 +6,19 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import ru.laurkan.bank.notifications.configuration.EmailClientConfiguration;
 import ru.laurkan.bank.notifications.exception.EmailSendException;
 import ru.laurkan.bank.notifications.model.EmailNotification;
 
 import java.util.Properties;
 
 @Component
+@RequiredArgsConstructor
 public class EmailClient {
-    @Value("${mail.username}")
-    private String username;
-
-    @Value("${mail.password}")
-    private String password;
-
-    @Value("${mail.smtp.host}")
-    private String host;
-
-    @Value("${mail.smtp.port}")
-    private Long port;
-
+    private final EmailClientConfiguration emailClientConfiguration;
     private Session session;
 
     @PostConstruct
@@ -35,14 +26,14 @@ public class EmailClient {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.host", host);
-        prop.put("mail.smtp.port", port);
-        prop.put("mail.smtp.ssl.trust", host);
+        prop.put("mail.smtp.host", emailClientConfiguration.getHost());
+        prop.put("mail.smtp.port", emailClientConfiguration.getPort());
+        prop.put("mail.smtp.ssl.trust", emailClientConfiguration.getHost());
 
         session = Session.getInstance(prop, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(emailClientConfiguration.getUsername(), emailClientConfiguration.getPassword());
             }
         });
     }
@@ -62,7 +53,7 @@ public class EmailClient {
         return Mono.just((Message) new MimeMessage(session))
                 .map(message -> {
                     try {
-                        message.setFrom(new InternetAddress(username));
+                        message.setFrom(new InternetAddress(emailClientConfiguration.getUsername()));
 
                         message.setRecipients(
                                 Message.RecipientType.TO, InternetAddress.parse(emailNotification.getRecipient()));
