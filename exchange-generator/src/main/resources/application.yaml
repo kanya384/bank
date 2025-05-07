@@ -1,8 +1,8 @@
 server:
-  port: 9010
+  port: 9030
 spring:
   application:
-    name: blocker
+    name: exchange-rates
   security:
     oauth2:
       resourceserver:

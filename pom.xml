@@ -18,6 +18,7 @@
         <module>gateway</module>
         <module>blocker</module>
         <module>notifications</module>
+        <module>exchange-generator</module>
     </modules>
     <packaging>pom</packaging>
 

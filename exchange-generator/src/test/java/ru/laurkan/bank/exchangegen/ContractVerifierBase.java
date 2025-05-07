@@ -1,4 +1,4 @@
-package ru.laurkan.bank.blocker;
+package ru.laurkan.bank.exchangegen;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 )
 @DirtiesContext
 @Import(SecurityTestConfiguration.class)
-public abstract class ContractVerifierBase {
+public class ContractVerifierBase {
     @LocalServerPort
     int port;
 
@@ -21,5 +21,4 @@ public abstract class ContractVerifierBase {
     public void beforeEach() {
         RestAssured.baseURI = "http://localhost:" + this.port;
     }
-
 }

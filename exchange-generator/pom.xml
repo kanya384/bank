@@ -9,7 +9,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>blocker</artifactId>
+    <artifactId>exchange-generator</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -33,7 +34,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <testFramework>JUNIT5</testFramework>
-                    <packageWithBaseClasses>ru.laurkan.bank.blocker</packageWithBaseClasses>
+                    <packageWithBaseClasses>ru.laurkan.bank.exchangegen</packageWithBaseClasses>
                     <failOnNoContracts>false</failOnNoContracts>
                     <testMode>EXPLICIT</testMode>
                 </configuration>
