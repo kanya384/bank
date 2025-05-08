@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.front.exception.RegistrationException;
+import ru.laurkan.bank.clients.accounts.exception.RegistrationException;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
                 "code", HttpStatus.BAD_REQUEST,
                 "text", String.format("Ошибка(-и) валидации: %s", sb)
         ));
-        
+
         return Mono.just("oops");
     }
 

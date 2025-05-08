@@ -19,6 +19,8 @@
         <module>blocker</module>
         <module>notifications</module>
         <module>exchange-generator</module>
+        <module>cash</module>
+        <module>clients</module>
     </modules>
     <packaging>pom</packaging>
 

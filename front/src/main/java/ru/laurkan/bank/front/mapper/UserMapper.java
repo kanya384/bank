@@ -4,8 +4,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import ru.laurkan.bank.front.client.accounts.dto.user.RegisterUserRequestDTO;
-import ru.laurkan.bank.front.client.accounts.dto.user.UserResponseDTO;
+import ru.laurkan.bank.clients.accounts.dto.user.ChangePasswordRequest;
+import ru.laurkan.bank.clients.accounts.dto.user.RegisterUserRequest;
+import ru.laurkan.bank.clients.accounts.dto.user.UpdateUserRequest;
+import ru.laurkan.bank.clients.accounts.dto.user.UserResponse;
+import ru.laurkan.bank.front.dto.user.ChangePasswordRequestDTO;
+import ru.laurkan.bank.front.dto.user.RegisterUserRequestDTO;
+import ru.laurkan.bank.front.dto.user.UpdateUserRequestDTO;
+import ru.laurkan.bank.front.dto.user.UserResponseDTO;
 import ru.laurkan.bank.front.model.User;
 
 @Mapper(
@@ -15,7 +21,15 @@ import ru.laurkan.bank.front.model.User;
 )
 public abstract class UserMapper {
 
+    public abstract User mapToUser(UserResponse user);
+
+    public abstract UpdateUserRequest map(UpdateUserRequestDTO request);
+
+    public abstract UserResponseDTO map(UserResponse user);
+
     public abstract User map(UserResponseDTO user);
 
-    public abstract User map(RegisterUserRequestDTO userRequestDTO);
+    public abstract RegisterUserRequest map(RegisterUserRequestDTO userRequestDTO);
+
+    public abstract ChangePasswordRequest map(ChangePasswordRequestDTO userRequestDTO);
 }

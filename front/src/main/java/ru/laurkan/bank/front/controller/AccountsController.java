@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.front.client.accounts.dto.accounts.CreateAccountRequestDTO;
+import ru.laurkan.bank.front.dto.account.CreateAccountRequestDTO;
 import ru.laurkan.bank.front.service.AccountsService;
 import ru.laurkan.bank.front.utils.SecurityUtils;
 

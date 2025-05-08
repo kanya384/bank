@@ -2,8 +2,8 @@ package ru.laurkan.bank.front.service;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.front.client.accounts.dto.accounts.AccountResponseDTO;
-import ru.laurkan.bank.front.client.accounts.dto.accounts.CreateAccountRequestDTO;
+import ru.laurkan.bank.front.dto.account.AccountResponseDTO;
+import ru.laurkan.bank.front.dto.account.CreateAccountRequestDTO;
 
 import java.util.List;
 
