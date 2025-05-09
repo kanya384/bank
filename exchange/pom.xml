@@ -9,8 +9,14 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>accounts</artifactId>
+    <artifactId>exchange</artifactId>
     <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -67,11 +73,6 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -79,12 +80,12 @@
                 <artifactId>spring-cloud-contract-maven-plugin</artifactId>
                 <version>4.2.1</version>
                 <extensions>true</extensions>
-                <ru.laurkan.bank.exchange.configuration>
+                <configuration>
                     <testFramework>JUNIT5</testFramework>
-                    <packageWithBaseClasses>ru.laurkan.bank.accounts.contracts</packageWithBaseClasses>
+                    <packageWithBaseClasses>ru.laurkan.bank.exchange</packageWithBaseClasses>
                     <failOnNoContracts>false</failOnNoContracts>
                     <testMode>EXPLICIT</testMode>
-                </ru.laurkan.bank.exchange.configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>

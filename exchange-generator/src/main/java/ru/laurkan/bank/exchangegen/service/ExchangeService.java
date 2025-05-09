@@ -1,8 +1,8 @@
 package ru.laurkan.bank.exchangegen.service;
 
 import reactor.core.publisher.Flux;
-import ru.laurkan.bank.exchangegen.dto.ExchangeRateResponseDTO;
+import ru.laurkan.bank.clients.exchange.dto.ExchangeRateResponse;
 
 public interface ExchangeService {
-    Flux<ExchangeRateResponseDTO> readRates();
+    Flux<ExchangeRateResponse> updateRates();
 }

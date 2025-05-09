@@ -86,12 +86,12 @@
                 <artifactId>spring-cloud-contract-maven-plugin</artifactId>
                 <version>4.2.1</version>
                 <extensions>true</extensions>
-                <configuration>
+                <ru.laurkan.bank.exchange.configuration>
                     <testFramework>JUNIT5</testFramework>
                     <packageWithBaseClasses>ru.laurkan.bank.accounts.contracts</packageWithBaseClasses>
                     <failOnNoContracts>false</failOnNoContracts>
                     <testMode>EXPLICIT</testMode>
-                </configuration>
+                </ru.laurkan.bank.exchange.configuration>
             </plugin>
         </plugins>
     </build>

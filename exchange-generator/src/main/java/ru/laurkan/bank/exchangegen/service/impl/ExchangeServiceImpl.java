@@ -1,11 +1,14 @@
 package ru.laurkan.bank.exchangegen.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.exchangegen.dto.ExchangeRateResponseDTO;
+import ru.laurkan.bank.clients.exchange.ExchangeClient;
+import ru.laurkan.bank.clients.exchange.dto.ExchangeRateResponse;
 import ru.laurkan.bank.exchangegen.mapper.ExchangeMapper;
 import ru.laurkan.bank.exchangegen.model.Currency;
 import ru.laurkan.bank.exchangegen.model.ExchangeRate;
@@ -16,23 +19,34 @@ import java.util.List;
 @Service
 public class ExchangeServiceImpl implements ExchangeService {
     private final ExchangeMapper exchangeMapper;
-    private volatile List<ExchangeRate> exchangeRates;
+    private final ExchangeClient exchangeClient;
 
     @Autowired
-    public ExchangeServiceImpl(ExchangeMapper exchangeMapper) {
-        refreshRates().block();
+    public ExchangeServiceImpl(@Value("${clients.exchange.uri}") String exchangeUri,
+                               WebClient webClient,
+                               ExchangeMapper exchangeMapper
+    ) {
         this.exchangeMapper = exchangeMapper;
+        this.exchangeClient = new ExchangeClient(exchangeUri, webClient);
     }
 
     @Scheduled(fixedDelay = 1000)
-    private Mono<List<ExchangeRate>> refreshRates() {
+    @Override
+    public Flux<ExchangeRateResponse> updateRates() {
+        return generateRates()
+                .flatMapMany(Flux::fromIterable)
+                .map(exchangeMapper::map)
+                .collectList()
+                .flatMapMany(exchangeClient::update);
+    }
+
+    private Mono<List<ExchangeRate>> generateRates() {
         return Flux.just(Currency.values())
                 .map(currency -> ExchangeRate.builder()
                         .currency(currency)
                         .rate(generateRateForCurrency(currency))
                         .build())
-                .collectList()
-                .doOnNext(list -> exchangeRates = list);
+                .collectList();
     }
 
     private double generateRateForCurrency(Currency currency) {
@@ -41,11 +55,6 @@ public class ExchangeServiceImpl implements ExchangeService {
             case USD -> getRandomNumber(0.15, 0.25);
             case CNY -> getRandomNumber(0.3, 0.5);
         };
-    }
-
-    public Flux<ExchangeRateResponseDTO> readRates() {
-        return Flux.fromIterable(exchangeRates)
-                .map(exchangeMapper::map);
     }
 
     public double getRandomNumber(double min, double max) {

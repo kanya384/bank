@@ -1,12 +1,13 @@
-package ru.laurkan.bank.exchangegen.mapper;
+package ru.laurkan.bank.exchange.mapper;
 
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import ru.laurkan.bank.clients.exchange.dto.UpdateExchangeRateRequest;
-import ru.laurkan.bank.exchangegen.model.ExchangeRate;
+import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
+import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequestDTO;
+import ru.laurkan.bank.exchange.model.ExchangeRate;
 
 @Mapper(
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -14,6 +15,7 @@ import ru.laurkan.bank.exchangegen.model.ExchangeRate;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface ExchangeMapper {
+    ExchangeRateResponseDTO map(ExchangeRate exchangeRate);
 
-    UpdateExchangeRateRequest map(ExchangeRate exchangeRate);
+    ExchangeRate map(UpdateExchangeRateRequestDTO request);
 }

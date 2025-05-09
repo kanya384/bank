@@ -21,6 +21,7 @@
         <module>exchange-generator</module>
         <module>cash</module>
         <module>clients</module>
+        <module>exchange</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -119,7 +120,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
-                <configuration>
+                <ru.laurkan.bank.exchange.configuration>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -132,7 +133,7 @@
                             <version>1.6.3</version>
                         </path>
                     </annotationProcessorPaths>
-                </configuration>
+                </ru.laurkan.bank.exchange.configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

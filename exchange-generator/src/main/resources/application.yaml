@@ -1,5 +1,8 @@
 server:
-  port: 9030
+  port: 9070
+clients:
+  exchange:
+    uri: http://localhost:9060
 spring:
   application:
     name: exchange-rates

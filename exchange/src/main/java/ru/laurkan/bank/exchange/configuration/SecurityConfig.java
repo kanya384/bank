@@ -1,4 +1,4 @@
-package ru.laurkan.bank.exchangegen.configuration;
+package ru.laurkan.bank.exchange.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .authorizeExchange(authorize -> authorize
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 )
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .oauth2ResourceServer(serverSpec -> serverSpec
