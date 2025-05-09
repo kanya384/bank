@@ -1,6 +1,7 @@
 package ru.laurkan.bank.notifications.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,6 +29,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
 
+    @Scheduled(fixedDelay = 3000)
     @Override
     public Flux<EmailNotification> sendMessages() {
         return emailNotificationRepository.findBySent(false)
