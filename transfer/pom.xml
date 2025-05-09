@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>cash</artifactId>
+    <artifactId>transfer</artifactId>
     <packaging>jar</packaging>
 
     <properties>

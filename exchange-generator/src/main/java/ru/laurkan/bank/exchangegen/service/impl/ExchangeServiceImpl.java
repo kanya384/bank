@@ -52,8 +52,8 @@ public class ExchangeServiceImpl implements ExchangeService {
     private double generateRateForCurrency(Currency currency) {
         return switch (currency) {
             case RUB -> 1.0;
-            case USD -> getRandomNumber(0.15, 0.25);
-            case CNY -> getRandomNumber(0.3, 0.5);
+            case USD -> getRandomNumber(0.01, 0.015);
+            case CNY -> getRandomNumber(0.075, 0.085);
         };
     }
 

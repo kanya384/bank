@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
-import ru.laurkan.bank.accounts.dto.account.CreateAccountRequestDTO;
-import ru.laurkan.bank.accounts.dto.account.PutMoneyToAccountDTO;
-import ru.laurkan.bank.accounts.dto.account.TakeMoneyFromAccountDTO;
+import ru.laurkan.bank.accounts.dto.account.*;
 import ru.laurkan.bank.accounts.service.AccountService;
 
 @RestController
@@ -49,5 +46,10 @@ public class AccountsController {
     public Mono<AccountResponseDTO> takeMoneyFromAccount(@PathVariable Long id,
                                                          @RequestBody @Valid TakeMoneyFromAccountDTO takeMoneyFromAccountDTO) {
         return accountService.takeMoneyFromAccount(id, takeMoneyFromAccountDTO.getAmount());
+    }
+
+    @PutMapping("/transfer-money")
+    public Mono<TransferMoneyResponseDTO> transferMoney(@RequestBody @Valid TransferMoneyRequestDTO transferMoneyRequestDTO) {
+        return accountService.transferMoney(transferMoneyRequestDTO);
     }
 }

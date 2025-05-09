@@ -3,10 +3,13 @@ package ru.laurkan.bank.accounts.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
 import ru.laurkan.bank.accounts.dto.account.CreateAccountRequestDTO;
+import ru.laurkan.bank.accounts.dto.account.TransferMoneyRequestDTO;
+import ru.laurkan.bank.accounts.dto.account.TransferMoneyResponseDTO;
 import ru.laurkan.bank.accounts.exception.AccountHasMoneyException;
 import ru.laurkan.bank.accounts.exception.NotEnoughMoneyException;
 import ru.laurkan.bank.accounts.exception.NotFoundException;
@@ -66,6 +69,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(accountMapper::map);
     }
 
+    @Transactional
     @Override
     public Mono<AccountResponseDTO> putMoneyToAccount(Long accountId, Double amount) {
         return accountRepository.findById(accountId)
@@ -74,6 +78,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(accountMapper::map);
     }
 
+    @Transactional
     @Override
     public Mono<AccountResponseDTO> takeMoneyFromAccount(Long accountId, Double amount) {
         return accountRepository.findById(accountId)
@@ -85,5 +90,13 @@ public class AccountServiceImpl implements AccountService {
                 })
                 .flatMap(accountRepository::save)
                 .map(accountMapper::map);
+    }
+
+    @Transactional
+    @Override
+    public Mono<TransferMoneyResponseDTO> transferMoney(TransferMoneyRequestDTO request) {
+        return takeMoneyFromAccount(request.getFromAccountId(), request.getFromMoneyAmount())
+                .flatMap(__ -> putMoneyToAccount(request.getToAccountId(), request.getToMoneyAmount()))
+                .map(__ -> TransferMoneyResponseDTO.builder().completed(true).build());
     }
 }

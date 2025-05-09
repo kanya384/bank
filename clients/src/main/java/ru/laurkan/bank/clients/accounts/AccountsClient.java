@@ -6,10 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.clients.accounts.dto.accounts.AccountResponse;
-import ru.laurkan.bank.clients.accounts.dto.accounts.CreateAccountRequest;
-import ru.laurkan.bank.clients.accounts.dto.accounts.PutMoneyToAccount;
-import ru.laurkan.bank.clients.accounts.dto.accounts.TakeMoneyFromAccount;
+import ru.laurkan.bank.clients.accounts.dto.accounts.*;
 import ru.laurkan.bank.clients.accounts.dto.user.*;
 import ru.laurkan.bank.clients.accounts.exception.MoneyException;
 import ru.laurkan.bank.clients.accounts.exception.RegistrationException;
@@ -127,6 +124,21 @@ public class AccountsClient {
                         response -> response.bodyToMono(String.class).map(MoneyException::new)
                 )
                 .bodyToMono(AccountResponse.class)
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
+    }
+
+    public Mono<TransferMoneyResponse> transferMoney(TransferMoneyRequest request) {
+        return webClient
+                .put()
+                .uri(baseUrl + "/accounts/transfer-money")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .onStatus(
+                        HttpStatus.PAYMENT_REQUIRED::equals,
+                        response -> response.bodyToMono(String.class).map(MoneyException::new)
+                )
+                .bodyToMono(TransferMoneyResponse.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
     }
 
