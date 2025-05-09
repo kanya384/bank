@@ -9,6 +9,8 @@ import ru.laurkan.bank.cash.model.Transaction;
 import ru.laurkan.bank.cash.model.TransactionType;
 import ru.laurkan.bank.cash.model.WithdrawalTransaction;
 import ru.laurkan.bank.cash.repository.dto.TransactionRepositoryDTO;
+import ru.laurkan.bank.clients.blocker.dto.DepositTransactionRequest;
+import ru.laurkan.bank.clients.blocker.dto.WithdrawalTransactionRequest;
 
 @Mapper(
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -23,6 +25,10 @@ public abstract class TransactionMapper {
     public abstract Transaction map(TransactionRepositoryDTO transaction);
 
     public abstract TransactionRepositoryDTO mapToDb(Transaction transaction);
+
+    public abstract DepositTransactionRequest map(DepositTransaction depositTransaction);
+
+    public abstract WithdrawalTransactionRequest map(WithdrawalTransaction depositTransaction);
 
     @ObjectFactory
     public Transaction createTransactionFromRequest(TransactionType transactionType, CreateTransactionRequestDTO request) {

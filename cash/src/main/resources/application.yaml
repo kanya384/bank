@@ -1,5 +1,12 @@
 server:
   port: 9050
+clients:
+  accounts:
+    uri: http://localhost:8090/accounts
+  blocker:
+    uri: http://localhost:9010
+  notifications:
+    uri: http://localhost:9020
 spring:
   config:
     import: optional:file:.env[.properties]

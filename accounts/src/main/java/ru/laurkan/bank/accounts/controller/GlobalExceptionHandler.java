@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import ru.laurkan.bank.accounts.exception.AccountHasMoneyException;
-import ru.laurkan.bank.accounts.exception.NotFoundException;
-import ru.laurkan.bank.accounts.exception.UserAlreadyHasAccountInThisCurrency;
-import ru.laurkan.bank.accounts.exception.UserNotFoundException;
+import ru.laurkan.bank.accounts.exception.*;
 
 import java.util.List;
 
@@ -48,7 +45,16 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleDuplicateException(Exception e, Model model) {
         return ErrorResponse.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR)
+                .code(HttpStatus.CONFLICT)
+                .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler({NotEnoughMoneyException.class})
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    public ErrorResponse handleNotEnoughMoneyException(Exception e, Model model) {
+        return ErrorResponse.builder()
+                .code(HttpStatus.PAYMENT_REQUIRED)
                 .message(e.getMessage())
                 .build();
     }

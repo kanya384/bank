@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
 import ru.laurkan.bank.accounts.dto.account.CreateAccountRequestDTO;
+import ru.laurkan.bank.accounts.dto.account.PutMoneyToAccountDTO;
+import ru.laurkan.bank.accounts.dto.account.TakeMoneyFromAccountDTO;
 import ru.laurkan.bank.accounts.service.AccountService;
 
 @RestController
@@ -16,7 +18,12 @@ import ru.laurkan.bank.accounts.service.AccountService;
 public class AccountsController {
     private final AccountService accountService;
 
-    @GetMapping("/{user-id}")
+    @GetMapping("/{id}")
+    public Mono<AccountResponseDTO> readAccountById(@PathVariable("id") Long accountId) {
+        return accountService.readAccountById(accountId);
+    }
+
+    @GetMapping("/user/{user-id}")
     public Flux<AccountResponseDTO> readAccountsOfUser(@PathVariable("user-id") Long userId) {
         return accountService.readAccountsOfUser(userId);
     }
@@ -30,5 +37,17 @@ public class AccountsController {
     @DeleteMapping("/{id}")
     public Mono<Void> deleteAccount(@PathVariable Long id) {
         return accountService.deleteAccount(id);
+    }
+
+    @PutMapping("/{id}/put-money")
+    public Mono<AccountResponseDTO> putMoneyToAccount(@PathVariable Long id,
+                                                      @RequestBody @Valid PutMoneyToAccountDTO putMoneyToAccountDTO) {
+        return accountService.putMoneyToAccount(id, putMoneyToAccountDTO.getAmount());
+    }
+
+    @PutMapping("/{id}/take-money")
+    public Mono<AccountResponseDTO> takeMoneyFromAccount(@PathVariable Long id,
+                                                         @RequestBody @Valid TakeMoneyFromAccountDTO takeMoneyFromAccountDTO) {
+        return accountService.takeMoneyFromAccount(id, takeMoneyFromAccountDTO.getAmount());
     }
 }

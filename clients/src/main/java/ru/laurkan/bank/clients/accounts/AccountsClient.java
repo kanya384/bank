@@ -8,7 +8,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.accounts.dto.accounts.AccountResponse;
 import ru.laurkan.bank.clients.accounts.dto.accounts.CreateAccountRequest;
+import ru.laurkan.bank.clients.accounts.dto.accounts.PutMoneyToAccount;
+import ru.laurkan.bank.clients.accounts.dto.accounts.TakeMoneyFromAccount;
 import ru.laurkan.bank.clients.accounts.dto.user.*;
+import ru.laurkan.bank.clients.accounts.exception.MoneyException;
 import ru.laurkan.bank.clients.accounts.exception.RegistrationException;
 
 
@@ -27,6 +30,14 @@ public class AccountsClient {
                 .uri(baseUrl + "/user/find-by-login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
+                .retrieve()
+                .bodyToMono(UserResponse.class)
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
+    }
+
+    public Mono<UserResponse> findUserByAccountId(Long accountId) {
+        return webClient.get()
+                .uri(baseUrl + "/user/find-by-account-id/" + accountId)
                 .retrieve()
                 .bodyToMono(UserResponse.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
@@ -77,12 +88,46 @@ public class AccountsClient {
                 .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
     }
 
+    public Mono<AccountResponse> readAccountById(Long accountId) {
+        return webClient
+                .get()
+                .uri(baseUrl + "/accounts/" + accountId)
+                .retrieve()
+                .bodyToMono(AccountResponse.class);
+    }
+
     public Flux<AccountResponse> readAccountsOfUser(Long userId) {
         return webClient
                 .get()
-                .uri(baseUrl + "/accounts/" + userId)
+                .uri(baseUrl + "/accounts/user/" + userId)
                 .retrieve()
                 .bodyToFlux(AccountResponse.class);
+    }
+
+    public Mono<AccountResponse> putMoneyToAccount(Long accountId, PutMoneyToAccount request) {
+        return webClient
+                .put()
+                .uri(baseUrl + "/accounts/" + accountId + "/put-money")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(AccountResponse.class)
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
+    }
+
+    public Mono<AccountResponse> takeMoneyFromAccount(Long accountId, TakeMoneyFromAccount request) {
+        return webClient
+                .put()
+                .uri(baseUrl + "/accounts/" + accountId + "/take-money")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .onStatus(
+                        HttpStatus.PAYMENT_REQUIRED::equals,
+                        response -> response.bodyToMono(String.class).map(MoneyException::new)
+                )
+                .bodyToMono(AccountResponse.class)
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
     }
 
     public Mono<Void> deleteAccount(Long accountId) {

@@ -10,5 +10,11 @@ public interface AccountService {
 
     Mono<Void> deleteAccount(Long accountId);
 
+    Mono<AccountResponseDTO> readAccountById(Long accountId);
+
     Flux<AccountResponseDTO> readAccountsOfUser(Long userId);
+
+    Mono<AccountResponseDTO> putMoneyToAccount(Long accountId, Double amount);
+
+    Mono<AccountResponseDTO> takeMoneyFromAccount(Long accountId, Double amount);
 }

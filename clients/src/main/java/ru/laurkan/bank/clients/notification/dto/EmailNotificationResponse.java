@@ -1,4 +1,4 @@
-package ru.laurkan.bank.notifications.dto;
+package ru.laurkan.bank.clients.notification.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class EmailNotificationResponseDTO {
+public class EmailNotificationResponse {
     private Long id;
     private String recipient;
     private String subject;

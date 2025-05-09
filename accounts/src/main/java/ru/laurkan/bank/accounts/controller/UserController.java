@@ -19,6 +19,11 @@ public class UserController {
         return userService.findByLogin(request);
     }
 
+    @GetMapping(value = "/find-by-account-id/{account-id}")
+    public Mono<UserResponseDTO> findByAccountId(@PathVariable("account-id") Long accountId) {
+        return userService.findByAccountId(accountId);
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<UserResponseDTO> registerUser(@RequestBody @Valid RegisterUserRequestDTO request) {

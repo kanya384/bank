@@ -66,13 +66,13 @@ public abstract class AccountsBase extends AbstractTestContainer {
 
             accountRepository.save(Account.builder()
                     .userId(2L)
-                    .amount(0.0)
+                    .amount(100.0)
                     .currency(Currency.RUB)
                     .build()).block();
 
             accountRepository.save(Account.builder()
                     .userId(2L)
-                    .amount(0.0)
+                    .amount(10.5)
                     .currency(Currency.USD)
                     .build()).block();
 

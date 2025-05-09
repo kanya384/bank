@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
 import ru.laurkan.bank.accounts.dto.account.CreateAccountRequestDTO;
 import ru.laurkan.bank.accounts.exception.AccountHasMoneyException;
+import ru.laurkan.bank.accounts.exception.NotEnoughMoneyException;
 import ru.laurkan.bank.accounts.exception.NotFoundException;
 import ru.laurkan.bank.accounts.exception.UserAlreadyHasAccountInThisCurrency;
 import ru.laurkan.bank.accounts.mapper.AccountMapper;
@@ -54,8 +55,35 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Mono<AccountResponseDTO> readAccountById(Long accountId) {
+        return accountRepository.findById(accountId)
+                .map(accountMapper::map);
+    }
+
+    @Override
     public Flux<AccountResponseDTO> readAccountsOfUser(Long userId) {
         return accountRepository.findByUserId(userId)
+                .map(accountMapper::map);
+    }
+
+    @Override
+    public Mono<AccountResponseDTO> putMoneyToAccount(Long accountId, Double amount) {
+        return accountRepository.findById(accountId)
+                .doOnNext(account -> account.setAmount(account.getAmount() + amount))
+                .flatMap(accountRepository::save)
+                .map(accountMapper::map);
+    }
+
+    @Override
+    public Mono<AccountResponseDTO> takeMoneyFromAccount(Long accountId, Double amount) {
+        return accountRepository.findById(accountId)
+                .doOnNext(account -> {
+                    if (account.getAmount() < amount) {
+                        throw new NotEnoughMoneyException();
+                    }
+                    account.setAmount(account.getAmount() - amount);
+                })
+                .flatMap(accountRepository::save)
                 .map(accountMapper::map);
     }
 }

@@ -7,7 +7,7 @@ Contract.make {
     description "Получить аккаунты пользователя"
     request {
         method 'GET'
-        url '/accounts/2'
+        url '/accounts/user/2'
     }
 
 
