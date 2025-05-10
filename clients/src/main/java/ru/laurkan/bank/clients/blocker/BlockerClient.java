@@ -1,19 +1,16 @@
 package ru.laurkan.bank.clients.blocker;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.blocker.dto.*;
 
+@RequiredArgsConstructor
 public class BlockerClient {
     private final String baseUrl;
     private final WebClient webClient;
-
-    public BlockerClient(String baseUrl, WebClient webClient) {
-        this.baseUrl = baseUrl;
-        this.webClient = webClient;
-    }
 
     public Mono<DecisionResponse> validate(DepositTransactionRequest request) {
         return webClient.post()

@@ -1,5 +1,6 @@
 package ru.laurkan.bank.clients.exchange;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebInputException;
@@ -11,14 +12,10 @@ import ru.laurkan.bank.clients.exchange.dto.UpdateExchangeRateRequest;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ExchangeClient {
     private final String baseUrl;
     private final WebClient webClient;
-
-    public ExchangeClient(String baseUrl, WebClient webClient) {
-        this.baseUrl = baseUrl;
-        this.webClient = webClient;
-    }
 
     public Flux<ExchangeRateResponse> readAll() {
         return webClient.get()

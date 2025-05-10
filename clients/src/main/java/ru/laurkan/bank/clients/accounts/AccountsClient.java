@@ -1,5 +1,6 @@
 package ru.laurkan.bank.clients.accounts;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,15 +12,10 @@ import ru.laurkan.bank.clients.accounts.dto.user.*;
 import ru.laurkan.bank.clients.accounts.exception.MoneyException;
 import ru.laurkan.bank.clients.accounts.exception.RegistrationException;
 
-
+@RequiredArgsConstructor
 public class AccountsClient {
     private final String baseUrl;
     private final WebClient webClient;
-
-    public AccountsClient(String baseUrl, WebClient webClient) {
-        this.baseUrl = baseUrl;
-        this.webClient = webClient;
-    }
 
 
     public Mono<UserResponse> findByLogin(FindByLoginRequest request) {

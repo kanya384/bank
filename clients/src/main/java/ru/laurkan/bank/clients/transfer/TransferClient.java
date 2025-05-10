@@ -1,25 +1,27 @@
-package ru.laurkan.bank.clients.notification;
+package ru.laurkan.bank.clients.transfer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.clients.notification.dto.CreateEmailNotificationRequest;
-import ru.laurkan.bank.clients.notification.dto.EmailNotificationResponse;
+import ru.laurkan.bank.clients.cash.dto.CreateTransactionRequest;
+import ru.laurkan.bank.clients.cash.dto.TransactionResponse;
+import ru.laurkan.bank.clients.cash.dto.TransactionType;
 
 @RequiredArgsConstructor
-public class NotificationClient {
+public class TransferClient {
     private final String baseUrl;
     private final WebClient webClient;
 
-    public Mono<EmailNotificationResponse> sendEmailNotification(CreateEmailNotificationRequest request) {
+    public Mono<TransactionResponse> createTransaction(TransactionType transactionType,
+                                                       CreateTransactionRequest request) {
         return webClient.post()
-                .uri(baseUrl + "/notification/email")
+                .uri(baseUrl + "/transaction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(EmailNotificationResponse.class)
+                .bodyToMono(TransactionResponse.class)
                 .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
     }
 }

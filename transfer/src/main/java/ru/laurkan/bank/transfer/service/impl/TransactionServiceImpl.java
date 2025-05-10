@@ -1,11 +1,8 @@
 package ru.laurkan.bank.transfer.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.accounts.AccountsClient;
@@ -40,25 +37,6 @@ public class TransactionServiceImpl implements TransactionService {
     private final NotificationClient notificationClient;
     private final NotificationMapper notificationMapper;
     private final ExchangeClient exchangeClient;
-
-    @Autowired
-    public TransactionServiceImpl(@Value("${clients.accounts.uri}") String accountUri,
-                                  @Value("${clients.blocker.uri}") String blockerUri,
-                                  @Value("${clients.notifications.uri}") String notificationsUri,
-                                  @Value("${clients.exchange.uri}") String exchangeUri,
-                                  WebClient webClient,
-                                  TransactionRepository transactionRepository,
-                                  TransactionMapper transactionMapper,
-                                  NotificationMapper notificationMapper
-    ) {
-        this.transactionRepository = transactionRepository;
-        this.transactionMapper = transactionMapper;
-        this.accountsClient = new AccountsClient(accountUri, webClient);
-        this.blockerClient = new BlockerClient(blockerUri, webClient);
-        this.notificationClient = new NotificationClient(notificationsUri, webClient);
-        this.notificationMapper = notificationMapper;
-        this.exchangeClient = new ExchangeClient(exchangeUri, webClient);
-    }
 
 
     @Override

@@ -1,10 +1,8 @@
 package ru.laurkan.bank.exchangegen.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.exchange.ExchangeClient;
@@ -17,18 +15,10 @@ import ru.laurkan.bank.exchangegen.service.ExchangeService;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService {
     private final ExchangeMapper exchangeMapper;
     private final ExchangeClient exchangeClient;
-
-    @Autowired
-    public ExchangeServiceImpl(@Value("${clients.exchange.uri}") String exchangeUri,
-                               WebClient webClient,
-                               ExchangeMapper exchangeMapper
-    ) {
-        this.exchangeMapper = exchangeMapper;
-        this.exchangeClient = new ExchangeClient(exchangeUri, webClient);
-    }
 
     @Scheduled(fixedDelay = 1000)
     @Override
