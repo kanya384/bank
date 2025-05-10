@@ -1,27 +1,29 @@
 server:
   port: 8090
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: gateway
   security:
-    config:
-      import: optional:file:.env[.properties]
     oauth2:
       client:
         provider:
           keycloak:
-            token-uri: http://localhost:8080/realms/master/protocol/openid-connect/token
+            token-uri: http://${keycloak_url}/realms/master/protocol/openid-connect/token
         registration:
           gateway-client:
             provider: keycloak
             client-id: gateway-client-id
             client-secret: uMbEKicRQZ6lxCyFz51Ol0nUPZk7BXd9
-            scope: user.read
+            scope: profile
             authorization-grant-type: client_credentials
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: ${consul_host}
+      port: ${consul_port}
+      config:
+        enabled: false
     gateway:
       routes:
         - id: to-accounts

@@ -12,7 +12,7 @@ spring:
           jwk-set-uri: http://${keycloak_url}/realms/master/protocol/openid-connect/certs
   cloud:
     consul:
-      host: ${consul_host}
-      port: ${consul_port}
+      host: consul
+      port: 8500
       config:
         enabled: false

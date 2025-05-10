@@ -9,14 +9,10 @@ mail:
     host: smtp.mail.ru
     port: 465
 spring:
-  config:
-    import: optional:file:.env[.properties]
   cloud:
     consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false
+      host: consul
+      port: 8500
   application:
     name: notifications
   r2dbc:

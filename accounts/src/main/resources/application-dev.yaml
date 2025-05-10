@@ -1,16 +1,18 @@
 server:
   port: 9000
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     name: accounts
+  config:
+    import: optional:consul:consul:8500
+  cloud:
+    consul:
+      host: consul
+      port: 8500
   r2dbc:
     url: r2dbc:postgresql://${pg_url}/accounts
     username: ${pg_user}
     password: ${pg_password}
-  jpa:
-    show-sql: true
   liquibase:
     url: jdbc:postgresql://${pg_url}/accounts
     user: ${pg_user}
@@ -21,13 +23,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://${keycloak_url}/realms/master/protocol/openid-connect/certs
-  cloud:
-    consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG

@@ -2,11 +2,15 @@ server:
   port: 80
 clients:
   accounts:
-    uri: http://localhost:8090/accounts
+    uri: ${gateway_service_url}/accounts
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: front
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: ${consul_host}
+      port: ${consul_port}
+      config:
+        enabled: false

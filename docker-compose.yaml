@@ -28,29 +28,21 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     volumes:
-      - ./storage/keycloak:/opt/keycloak/data/import
+      - ./storage/keycloak:/opt/keycloak/data/h2
     networks:
       - app-net
   consul:
-    image: consul:1.15.4
+    image: bitnami/consul:1.21.0
     container_name: 'consul'
-    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
     ports:
-      - "8400:8400"
       - "8500:8500"
+      - "8400:8400"
       - "8600:8600"
-    networks:
-      - app-net
-  consul-server:
-    image: consul:1.15.4
-    container_name: 'consul-server'
-    networks:
-      - app-net
+    environment:
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_DISABLE_KEYRING_FILE=true
+      - CONSUL_RETRY_JOIN_ADDRESS=consul
     volumes:
-      - ./storage/consul:/consul/data
-    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
-  consul-agent:
-    image: consul:1.15.4
-    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+      - ./storage/consul:/bitnami
     networks:
       - app-net

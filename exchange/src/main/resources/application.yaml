@@ -6,22 +6,24 @@ spring:
   application:
     name: exchange
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/exchange_rates
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: r2dbc:postgresql://${pg_url}/exchange_rates
+    username: ${pg_user}
+    password: ${pg_password}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://localhost:5432/exchange_rates
-    user: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: jdbc:postgresql://${pg_url}/exchange_rates
+    user: ${pg_user}
+    password: ${pg_password}
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: http://${keycloak_url}/realms/master/protocol/openid-connect/certs
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: ${consul_host}
+      port: ${consul_port}
+      config:
+        enabled: false
