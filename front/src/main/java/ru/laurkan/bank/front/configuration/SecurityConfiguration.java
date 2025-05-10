@@ -23,6 +23,7 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
         return http
                 .authorizeExchange((authorize) -> authorize
+                        .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/register", "/css/**").permitAll() // TODO: remove /
                         .anyExchange().authenticated()
                 )

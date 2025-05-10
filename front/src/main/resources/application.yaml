@@ -3,3 +3,10 @@ server:
 clients:
   accounts:
     uri: http://localhost:8090/accounts
+spring:
+  application:
+    name: front
+  cloud:
+    consul:
+      host: localhost
+      port: 8500

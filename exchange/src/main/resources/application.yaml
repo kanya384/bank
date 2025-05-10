@@ -21,3 +21,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+  cloud:
+    consul:
+      host: localhost
+      port: 8500

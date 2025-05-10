@@ -11,7 +11,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: accounts
+    name: cash
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/cash
     username: ${PG_USER}
@@ -28,6 +28,10 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG

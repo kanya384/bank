@@ -5,9 +5,13 @@ clients:
     uri: http://localhost:9060
 spring:
   application:
-    name: exchange-rates
+    name: exchange-generator
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
