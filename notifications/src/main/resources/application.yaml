@@ -34,4 +34,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${keycloak_url}/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs

@@ -2,34 +2,40 @@ server:
   port: 9090
 clients:
   accounts:
-    uri: http://localhost:8090/accounts
+    uri: ${accounts_service_url}
   blocker:
-    uri: http://localhost:9010
+    uri: ${blocker_service_url}
   notifications:
-    uri: http://localhost:9020
+    uri: ${notifications_service_url}
   exchange:
-    uri: http://localhost:9060
+    uri: ${exchange_service_url}
 spring:
   config:
     import: optional:file:.env[.properties]
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/transfers
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: r2dbc:postgresql://${pg_url}/transfers
+    username: ${pg_user}
+    password: ${pg_password}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://localhost:5432/transfers
-    user: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: jdbc:postgresql://${pg_url}/transfers
+    user: ${pg_user}
+    password: ${pg_password}
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+  cloud:
+    consul:
+      host: ${consul_host}
+      port: ${consul_port}
+      config:
+        enabled: false
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG

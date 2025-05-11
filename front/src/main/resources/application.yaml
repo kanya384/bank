@@ -14,3 +14,16 @@ spring:
       port: ${consul_port}
       config:
         enabled: false
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/token
+        registration:
+          gateway:
+            provider: keycloak
+            client-id: gateway
+            client-secret: ${gateway_secret}
+            scope: profile
+            authorization-grant-type: client_credentials
