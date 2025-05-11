@@ -2,7 +2,11 @@ server:
   port: 9060
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:consul:localhost:8500
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
   application:
     name: exchange
   r2dbc:
@@ -21,9 +25,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
-  cloud:
-    consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false

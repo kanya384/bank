@@ -5,7 +5,11 @@ clients:
     uri: ${gateway_service_url}/exchange
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:consul:localhost:8500
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
   application:
     name: exchange-generator
   security:
@@ -13,9 +17,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${keycloak_url}/realms/master/protocol/openid-connect/certs
-  cloud:
-    consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false

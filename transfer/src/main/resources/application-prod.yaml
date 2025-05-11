@@ -1,5 +1,5 @@
 server:
-  port: 9050
+  port: 9090
 clients:
   accounts:
     uri: ${gateway_service_url}/accounts
@@ -7,23 +7,25 @@ clients:
     uri: ${gateway_service_url}/blocker
   notifications:
     uri: ${gateway_service_url}/notifications
+  exchange:
+    uri: ${gateway_service_url}/exchange
 spring:
   config:
-    import: optional:consul:localhost:8500
+    import: optional:consul:consul:8500
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: consul
+      port: 8085
   application:
-    name: cash
+    name: transfer
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/cash
+    url: r2dbc:postgresql://${pg_url}/transfers
     username: ${pg_user}
     password: ${pg_password}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/cash
+    url: jdbc:postgresql://${pg_url}/transfers
     user: ${pg_user}
     password: ${pg_password}
     change-log: classpath:/db/changelog/db.changelog-master.xml
@@ -32,7 +34,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG

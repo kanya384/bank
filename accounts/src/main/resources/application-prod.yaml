@@ -1,10 +1,10 @@
 server:
   port: 9000
 spring:
-  application:
-    name: accounts
   config:
     import: optional:consul:consul:8500
+  application:
+    name: accounts
   cloud:
     consul:
       host: consul

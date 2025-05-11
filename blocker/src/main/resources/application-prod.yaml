@@ -2,7 +2,7 @@ server:
   port: 9010
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:consul:consul:8500
   application:
     name: blocker
   security:

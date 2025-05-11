@@ -2,18 +2,22 @@ server:
   port: 9090
 clients:
   accounts:
-    uri: ${accounts_service_url}
+    uri: ${gateway_service_url}/accounts
   blocker:
-    uri: ${blocker_service_url}
+    uri: ${gateway_service_url}/blocker
   notifications:
-    uri: ${notifications_service_url}
+    uri: ${gateway_service_url}/notifications
   exchange:
-    uri: ${exchange_service_url}
+    uri: ${gateway_service_url}/exchange
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:consul:localhost:8500
+  cloud:
+    consul:
+      host: localhost
+      port: 8085
   application:
-    name: accounts
+    name: transfer
   r2dbc:
     url: r2dbc:postgresql://${pg_url}/transfers
     username: ${pg_user}
@@ -29,13 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
-  cloud:
-    consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false
+          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG

@@ -5,10 +5,10 @@ clients:
     uri: ${gateway_service_url}/accounts
 spring:
   config:
-    import: optional:consul:localhost:8500
+    import: optional:consul:consul:8500
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
   application:
     name: front

@@ -1,28 +1,29 @@
 server:
-  port: 9020
-mail:
-  config:
-    import: optional:file:.env[.properties]
-  username: ${mail.username}
-  password: ${mail.password}
-  smtp:
-    host: smtp.mail.ru
-    port: 465
+  port: 9050
+clients:
+  accounts:
+    uri: ${gateway_service_url}/accounts
+  blocker:
+    uri: ${gateway_service_url}/blocker
+  notifications:
+    uri: ${gateway_service_url}/notifications
 spring:
+  config:
+    import: optional:consul:consul:8500
   cloud:
     consul:
       host: consul
       port: 8500
   application:
-    name: notifications
+    name: cash
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/notifications
+    url: r2dbc:postgresql://${pg_url}/cash
     username: ${pg_user}
     password: ${pg_password}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/notifications
+    url: jdbc:postgresql://${pg_url}/cash
     user: ${pg_user}
     password: ${pg_password}
     change-log: classpath:/db/changelog/db.changelog-master.xml

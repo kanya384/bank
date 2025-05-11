@@ -1,20 +1,22 @@
 server:
   port: 9060
 spring:
-  application:
-    name: exchange
   config:
     import: optional:consul:consul:8500
   cloud:
     consul:
       host: consul
       port: 8500
+  application:
+    name: exchange
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/accounts
+    url: r2dbc:postgresql://${pg_url}/exchange_rates
     username: ${pg_user}
     password: ${pg_password}
+  jpa:
+    show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/accounts
+    url: jdbc:postgresql://${pg_url}/exchange_rates
     user: ${pg_user}
     password: ${pg_password}
     change-log: classpath:/db/changelog/db.changelog-master.xml

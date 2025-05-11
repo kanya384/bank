@@ -1,8 +1,6 @@
 server:
   port: 9020
 mail:
-  config:
-    import: optional:file:.env[.properties]
   username: ${mail.username}
   password: ${mail.password}
   smtp:
@@ -10,13 +8,11 @@ mail:
     port: 465
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:consul:localhost:8500
   cloud:
     consul:
-      host: ${consul_host}
-      port: ${consul_port}
-      config:
-        enabled: false
+      host: localhost
+      port: 8500
   application:
     name: notifications
   r2dbc:

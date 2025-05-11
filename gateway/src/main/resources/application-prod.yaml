@@ -2,7 +2,7 @@ server:
   port: 8090
 spring:
   config:
-    import: optional:consul:localhost:8500
+    import: optional:consul:consul:8500
   application:
     name: gateway
   security:
@@ -59,7 +59,7 @@ spring:
             authorization-grant-type: client_credentials
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
     gateway:
       routes:
