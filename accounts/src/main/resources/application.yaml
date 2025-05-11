@@ -25,6 +25,8 @@ spring:
     consul:
       host: localhost
       port: 8500
+      discovery:
+        instance-id: custom-service-id
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG

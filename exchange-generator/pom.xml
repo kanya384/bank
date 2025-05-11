@@ -27,6 +27,7 @@
     </dependencies>
 
     <build>
+        <finalName>exchange-generator</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>

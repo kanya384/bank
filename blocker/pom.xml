@@ -25,18 +25,19 @@
     </dependencies>
 
     <build>
+        <finalName>blocker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-contract-maven-plugin</artifactId>
                 <version>4.2.1</version>
                 <extensions>true</extensions>
-                <ru.laurkan.bank.exchange.configuration>
+                <configuration>
                     <testFramework>JUNIT5</testFramework>
                     <packageWithBaseClasses>ru.laurkan.bank.blocker</packageWithBaseClasses>
                     <failOnNoContracts>false</failOnNoContracts>
                     <testMode>EXPLICIT</testMode>
-                </ru.laurkan.bank.exchange.configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>

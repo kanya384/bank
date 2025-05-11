@@ -34,5 +34,8 @@
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>gateway</finalName>
+    </build>
 
 </project>

@@ -60,4 +60,7 @@
             <artifactId>spring-security-test</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>front</finalName>
+    </build>
 </project>
