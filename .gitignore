@@ -37,3 +37,6 @@ build/
 
 ### Storage ###
 storage/
+
+### Mac OS ###
+.DS_Store
