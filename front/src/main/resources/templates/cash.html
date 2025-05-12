@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Наличные</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div th:replace="fragments/menu :: menu (active = 'cash')"></div>
+    <div style="padding: 30px; width: 100%">
+        <div class="d-flex flex-column" style="width: 100%">
+            <div class="mb-2">
+                <h5>Снятие/внесение наличных</h5>
+            </div>
+            <div class="d-flex flex-column" style="width: 100%">
+                <div class="mb-2">
+                    <h6>Внести деньги</h6>
+                </div>
+                <form
+                        th:action="@{'/cash/deposit'}"
+                        method="post"
+                >
+                    <div class="row">
+                        <div data-mdb-input-init class="form-outline mb-4 col-6">
+                            <label class="form-label" for="accountId">Номер счета</label>
+                            <select required="required" class="form-select" id="accountId" name="accountId">
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="${account.id}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-outline mb-4 col-6">
+                            <label class="form-label" for="amount">Сумма</label>
+                            <input required="required" type="number" id="amount" name="amount" class="form-control"
+                                   placeholder="Введите сумму"/>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="btn_pass" type="submit" class="btn btn-primary btn-block mb-4">
+                            Внести
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <hr/>
+            <div class="d-flex flex-column" style="width: 100%">
+                <div class="mb-2">
+                    <h6>Снять деньги</h6>
+                </div>
+                <form
+                        th:action="@{'/cash/withdrawal'}"
+                        method="post"
+                >
+                    <div class="row">
+                        <div data-mdb-input-init class="form-outline mb-4 col-6">
+                            <label class="form-label" for="accountId_w">Номер счета</label>
+                            <select required="required" class="form-select" id="accountId_w" name="accountId">
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="${account.id}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-outline mb-4 col-6">
+                            <label class="form-label" for="amount_w">Сумма</label>
+                            <input required="required" type="number" id="amount_w" name="amount" class="form-control"
+                                   placeholder="Введите сумму"/>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-block mb-4">
+                            Снять
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -29,7 +29,7 @@
                     <tbody>
                     <tr th:each="account : ${accounts}">
                         <th scope="row" th:text="${account.id}"></th>
-                        <td th:text="${account.amount}"></td>
+                        <td th:text="${#numbers.formatDecimal(account.amount == null ? 0 : account.amount, 1, 2)}"></td>
                         <td th:text="${account.currency}"></td>
                         <td>
                             <form

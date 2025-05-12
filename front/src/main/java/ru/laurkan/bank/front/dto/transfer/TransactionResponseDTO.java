@@ -1,4 +1,4 @@
-package ru.laurkan.bank.clients.transfer.dto;
+package ru.laurkan.bank.front.dto.transfer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ public class TransactionResponseDTO {
     private Long accountId;
     private Long receiverAccountId;
     private Double amount;
-    private TransactionType transactionType;
-    private TransactionStatus transactionStatus;
+    private String transactionType;
+    private String transactionStatus;
     private LocalDateTime createdAt;
 }

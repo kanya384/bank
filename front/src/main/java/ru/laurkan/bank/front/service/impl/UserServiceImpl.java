@@ -7,13 +7,11 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.accounts.AccountsClient;
 import ru.laurkan.bank.clients.accounts.dto.user.FindByLoginRequest;
-import ru.laurkan.bank.front.dto.user.ChangePasswordRequestDTO;
-import ru.laurkan.bank.front.dto.user.RegisterUserRequestDTO;
-import ru.laurkan.bank.front.dto.user.UpdateUserRequestDTO;
-import ru.laurkan.bank.front.dto.user.UserResponseDTO;
+import ru.laurkan.bank.front.dto.user.*;
 import ru.laurkan.bank.front.mapper.UserMapper;
 import ru.laurkan.bank.front.service.UserService;
 
@@ -56,6 +54,12 @@ public class UserServiceImpl implements UserService, ReactiveUserDetailsService 
     @Override
     public Mono<UserResponseDTO> changePassword(Long userId, ChangePasswordRequestDTO request) {
         return accountsClient.changePassword(userId, userMapper.map(request))
+                .map(userMapper::map);
+    }
+
+    @Override
+    public Flux<UserAccountResponseDTO> readUsersWithAccounts() {
+        return accountsClient.readUsersWithAccounts()
                 .map(userMapper::map);
     }
 }

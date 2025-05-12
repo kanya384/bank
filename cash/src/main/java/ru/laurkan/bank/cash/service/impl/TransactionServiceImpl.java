@@ -93,7 +93,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Flux<Transaction> sendNotifications() {
         return transactionRepository.findByTransactionStatusInAndNotificationSent(
-                        List.of(TransactionStatus.COMPLETED, TransactionStatus.FAILED, TransactionStatus.NOT_ENOUGH_MONEY), false)
+                        List.of(TransactionStatus.BLOCKED, TransactionStatus.COMPLETED,
+                                TransactionStatus.FAILED, TransactionStatus.NOT_ENOUGH_MONEY), false)
                 .map(transactionMapper::map)
                 .flatMap(this::sendEmail);
     }

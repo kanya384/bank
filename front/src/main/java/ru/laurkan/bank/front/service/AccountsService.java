@@ -10,6 +10,8 @@ import java.util.List;
 public interface AccountsService {
     Flux<AccountResponseDTO> readAccountsOfUser();
 
+    Flux<AccountResponseDTO> readAccountsOfUserById(Long userId);
+
     Mono<Void> deleteAccount(Long accountId);
 
     Mono<AccountResponseDTO> createAccount(CreateAccountRequestDTO request);

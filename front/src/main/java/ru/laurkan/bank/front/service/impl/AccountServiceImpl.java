@@ -31,6 +31,12 @@ public class AccountServiceImpl implements AccountsService {
     }
 
     @Override
+    public Flux<AccountResponseDTO> readAccountsOfUserById(Long userId) {
+        return accountsClient.readAccountsOfUser(userId)
+                .map(accountMapper::map);
+    }
+
+    @Override
     public Mono<Void> deleteAccount(Long userId) {
         return accountsClient.deleteAccount(userId);
     }

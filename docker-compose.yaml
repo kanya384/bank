@@ -9,6 +9,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
     volumes:
       - ./db.init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./storage/postgres:/var/lib/postgresql/data
@@ -18,9 +20,9 @@ services:
     platform: linux/amd64
     image: quay.io/keycloak/keycloak:26.1.3
     container_name: 'keycloak'
-    command: start-dev --import-realm
-    #    ports:
-    #      - "8080:8080"
+    command: start-dev
+    ports:
+      - "8080:8080"
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
@@ -31,10 +33,10 @@ services:
   consul:
     image: bitnami/consul:1.21.0
     container_name: 'consul'
-    #    ports:
-    #      - "8500:8500"
-    #      - "8400:8400"
-    #      - "8600:8600"
+    ports:
+      - "8500:8500"
+      - "8400:8400"
+      - "8600:8600"
     environment:
       - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
       - CONSUL_DISABLE_KEYRING_FILE=true
@@ -58,6 +60,7 @@ services:
     networks:
       - app-net
   blocker:
+    image: blocker
     container_name: blocker
     build:
       dockerfile: blocker/Dockerfile
@@ -72,6 +75,7 @@ services:
     networks:
       - app-net
   cash:
+    image: cash
     container_name: cash
     build:
       dockerfile: cash/Dockerfile
@@ -86,6 +90,7 @@ services:
     networks:
       - app-net
   exchange:
+    image: exchange
     container_name: exchange
     build:
       dockerfile: exchange/Dockerfile
@@ -100,6 +105,7 @@ services:
     networks:
       - app-net
   exchange-generator:
+    image: exchange-generator
     container_name: exchange-generator
     build:
       dockerfile: exchange-generator/Dockerfile
@@ -114,6 +120,7 @@ services:
     networks:
       - app-net
   front:
+    image: front
     container_name: front
     build:
       dockerfile: front/Dockerfile
@@ -130,6 +137,7 @@ services:
     networks:
       - app-net
   gateway:
+    image: gateway
     container_name: gateway
     build:
       dockerfile: gateway/Dockerfile
@@ -141,9 +149,12 @@ services:
       - consul
       - keycloak
       - postgres
+    ports:
+      - "8090:8090"
     networks:
       - app-net
   notifications:
+    image: notifications
     container_name: notifications
     build:
       dockerfile: notifications/Dockerfile
@@ -158,6 +169,7 @@ services:
     networks:
       - app-net
   transfer:
+    image: transfer
     container_name: transfer
     build:
       dockerfile: transfer/Dockerfile

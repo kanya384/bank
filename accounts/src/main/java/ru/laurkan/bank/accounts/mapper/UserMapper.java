@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.laurkan.bank.accounts.dto.user.RegisterUserRequestDTO;
 import ru.laurkan.bank.accounts.dto.user.UpdateUserRequestDTO;
 import ru.laurkan.bank.accounts.dto.user.UserResponseDTO;
+import ru.laurkan.bank.accounts.dto.user.UsersAccountsResponseDTO;
 import ru.laurkan.bank.accounts.model.User;
 
 @Mapper(
@@ -29,6 +30,8 @@ public abstract class UserMapper {
     }
 
     public abstract UserResponseDTO map(User user);
+
+    public abstract UsersAccountsResponseDTO mapUserAccounts(User user);
 
     public abstract User update(UpdateUserRequestDTO data, @MappingTarget User user);
 }

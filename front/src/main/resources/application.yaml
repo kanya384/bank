@@ -3,6 +3,12 @@ server:
 clients:
   accounts:
     uri: ${gateway_service_url}/accounts
+  exchange:
+    uri: ${gateway_service_url}/exchange
+  cash:
+    uri: ${gateway_service_url}/cash
+  transfer:
+    uri: ${gateway_service_url}/transfer
 spring:
   config:
     import: optional:consul:localhost:8500

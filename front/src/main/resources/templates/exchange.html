@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Главная страница</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div th:replace="fragments/menu :: menu (active = 'exchange')"></div>
+    <div style="padding: 30px; width: 100%">
+        <div class="d-flex flex-column" style="width: 100%">
+            <div class="mb-2">
+                <h5>Курсы валют (к рублю)</h5>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 pb-5">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Валюта</th>
+                        <th scope="col">Курс</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="rate : ${rates}">
+                        <td th:text="${rate.currency}"></td>
+                        <td th:text="${#numbers.formatDecimal(rate.rate == null ? 0 : rate.rate, 1, 3)}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

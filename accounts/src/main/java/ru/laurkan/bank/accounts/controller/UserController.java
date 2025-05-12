@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.accounts.dto.user.*;
 import ru.laurkan.bank.accounts.service.UserService;
@@ -22,6 +23,11 @@ public class UserController {
     @GetMapping(value = "/find-by-account-id/{account-id}")
     public Mono<UserResponseDTO> findByAccountId(@PathVariable("account-id") Long accountId) {
         return userService.findByAccountId(accountId);
+    }
+
+    @GetMapping("/all-with-accounts")
+    public Flux<UsersAccountsResponseDTO> findAllUsersWithAccounts() {
+        return userService.findAllUsersWithAccounts();
     }
 
     @PostMapping("/register")

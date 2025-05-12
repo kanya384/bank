@@ -18,20 +18,14 @@
             </a>
         </li>
         <li>
-            <a th:href="${'/transfer-self'}"
-               th:class="${#strings.equals(active, 'transfer-self')}? 'nav-link active' : 'nav-link text-white'">
-                Перевод между своими счетами
+            <a th:href="${'/transfer'}"
+               th:class="${#strings.equals(active, 'transfer')}? 'nav-link active' : 'nav-link text-white'">
+                Переводы
             </a>
         </li>
         <li>
-            <a th:href="${'/transfer-other'}"
-               th:class="${#strings.equals(active, 'transfer-other')}? 'nav-link active' : 'nav-link text-white'">
-                Перевод другому человеку
-            </a>
-        </li>
-        <li>
-            <a th:href="${'/exchange-rates'}"
-               th:class="${#strings.equals(active, 'exchange-rates')}? 'nav-link active' : 'nav-link text-white'">
+            <a th:href="${'/exchange'}"
+               th:class="${#strings.equals(active, 'exchange')}? 'nav-link active' : 'nav-link text-white'">
                 Курсы валют
             </a>
         </li>

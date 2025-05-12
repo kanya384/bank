@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Переводы</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div th:replace="fragments/menu :: menu (active = 'transfer')"></div>
+    <div style="padding: 30px; width: 100%">
+        <div class="d-flex flex-column" style="width: 100%">
+            <div class="mb-2">
+                <h5>Переводы наличных</h5>
+            </div>
+            <div class="d-flex flex-column" style="width: 100%">
+                <div class="mb-2">
+                    <h6>Перевести денги на свой счет</h6>
+                </div>
+                <form
+                        th:action="@{'/transfer/self-transfer'}"
+                        method="post"
+                >
+                    <div class="row">
+                        <div data-mdb-input-init class="form-outline mb-4 col-4">
+                            <label class="form-label" for="accountId">Со счета</label>
+                            <select required="required" class="form-select" id="accountId" name="accountId">
+                                <option disabled="disabled"></option>
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="@{${account.id} + ' (' + ${account.currency} + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-4 col-4">
+                            <label class="form-label" for="receiverAccountId">На счет</label>
+                            <select required="required" class="form-select" id="receiverAccountId"
+                                    name="receiverAccountId">
+                                <option disabled="disabled"></option>
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="@{${account.id} + ' (' + ${account.currency} + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-outline mb-4 col-4">
+                            <label class="form-label" for="amount">Сумма</label>
+                            <input required="required" type="number" id="amount" name="amount" class="form-control"
+                                   placeholder="Введите сумму"/>
+                        </div>
+                        <div class="alert alert-danger" id="alert_pass" role="alert" style="display:none">
+                            Счета должны быть разными
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="btn_pass" disabled="disabled" type="submit" class="btn btn-primary btn-block mb-4">
+                            Перевести
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <hr/>
+            <div class="d-flex flex-column" style="width: 100%">
+                <div class="mb-2">
+                    <h6>Перевести деньги другому человеку</h6>
+                </div>
+                <form
+                        th:action="@{'/transfer'}"
+                        method="post"
+                >
+                    <div class="row">
+                        <div data-mdb-input-init class="form-outline mb-4 col-3">
+                            <label class="form-label" for="accountId_w">Кому</label>
+                            <select required="required" class="form-select" id="user" name="user">
+                                <option disabled="disabled"></option>
+                                <option th:if="${current != user.id}" th:each="user : ${users}"
+                                        th:value="${user.id}"
+                                        th:text="@{${user.surname} + ' ' + ${user.name}}"
+                                        th:selected="${receiver_id != null && receiver_id==user.id}"
+                                >
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <form
+                        th:action="@{'/transfer/transfer-to-other-user'}"
+                        method="post"
+                        th:if="${receiver_id != null}"
+                >
+                    <div class="row">
+                        <div data-mdb-input-init class="form-outline mb-4 col-3">
+                            <label class="form-label" for="accountId_w">Со счета</label>
+                            <select required="required" class="form-select" id="accountId_w" name="accountId">
+                                <option disabled="disabled"></option>
+                                <option th:each="account : ${accounts}"
+                                        th:value="${account.id}"
+                                        th:text="@{${account.id} + ' (' + ${account.currency} + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-4 col-3">
+                            <label class="form-label" for="receiverAccountId_t">На счет</label>
+                            <select required="required" class="form-select" id="receiverAccountId_t"
+                                    name="receiverAccountId">
+                                <option disabled="disabled"></option>
+                                <option hidden="hidden" th:each="account : ${receiver_accounts}"
+                                        th:value="${account.id}"
+                                        th:text="@{${account.id} + ' (' + ${account.currency} + ')'}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-outline mb-4 col-6">
+                            <label class="form-label" for="amount_w">Сумма</label>
+                            <input required="required" type="number" id="amount_w" name="amount" class="form-control"
+                                   placeholder="Введите сумму"/>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-block mb-4">
+                            Перевести
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</main>
+</body>
+<script>
+    document.querySelector("#accountId").addEventListener('input', e => {
+        if (e.target.value != document.querySelector("#receiverAccountId").value) {
+            document.querySelector("#alert_pass").style.display = 'none'
+            document.querySelector("#btn_pass").disabled = false
+        } else {
+            document.querySelector("#alert_pass").style.display = 'block'
+            document.querySelector("#btn_pass").disabled = true
+        }
+    })
+
+    document.querySelector("#receiverAccountId").addEventListener('input', e => {
+        if (e.target.value != document.querySelector("#accountId").value) {
+            document.querySelector("#alert_pass").style.display = 'none'
+            document.querySelector("#btn_pass").disabled = false
+        } else {
+            document.querySelector("#alert_pass").style.display = 'block'
+            document.querySelector("#btn_pass").disabled = true
+        }
+    })
+
+    document.querySelector("#user").addEventListener('input', e => {
+        console.log(e.currentTarget);
+        console.log(e.currentTarget.closest('form').submit());
+    })
+</script>
+</html>

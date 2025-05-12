@@ -1,4 +1,4 @@
-package ru.laurkan.bank.clients.transfer.dto;
+package ru.laurkan.bank.front.dto.transfer;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
