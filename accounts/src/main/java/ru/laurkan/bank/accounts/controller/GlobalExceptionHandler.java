@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler({NotFoundException.class, UserNotFoundException.class})
+    @ExceptionHandler({NotFoundException.class, UserNotFoundException.class, AccountNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(Exception e, Model model) {
         return ErrorResponse.builder()

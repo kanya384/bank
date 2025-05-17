@@ -20,5 +20,4 @@ public class AbstractTestContainer {
     @Container
     @ServiceConnection
     static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:17.4");
-
 }

@@ -10,10 +10,7 @@ import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
 import ru.laurkan.bank.accounts.dto.account.CreateAccountRequestDTO;
 import ru.laurkan.bank.accounts.dto.account.TransferMoneyRequestDTO;
 import ru.laurkan.bank.accounts.dto.account.TransferMoneyResponseDTO;
-import ru.laurkan.bank.accounts.exception.AccountHasMoneyException;
-import ru.laurkan.bank.accounts.exception.NotEnoughMoneyException;
-import ru.laurkan.bank.accounts.exception.NotFoundException;
-import ru.laurkan.bank.accounts.exception.UserAlreadyHasAccountInThisCurrency;
+import ru.laurkan.bank.accounts.exception.*;
 import ru.laurkan.bank.accounts.mapper.AccountMapper;
 import ru.laurkan.bank.accounts.model.Account;
 import ru.laurkan.bank.accounts.model.Currency;
@@ -60,6 +57,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<AccountResponseDTO> readAccountById(Long accountId) {
         return accountRepository.findById(accountId)
+                .switchIfEmpty(Mono.error(new AccountNotFoundException(accountId)))
                 .map(accountMapper::map);
     }
 
@@ -73,6 +71,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<AccountResponseDTO> putMoneyToAccount(Long accountId, Double amount) {
         return accountRepository.findById(accountId)
+                .switchIfEmpty(Mono.error(new AccountNotFoundException(accountId)))
                 .doOnNext(account -> account.setAmount(account.getAmount() + amount))
                 .flatMap(accountRepository::save)
                 .map(accountMapper::map);
@@ -82,6 +81,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<AccountResponseDTO> takeMoneyFromAccount(Long accountId, Double amount) {
         return accountRepository.findById(accountId)
+                .switchIfEmpty(Mono.error(new NotFoundException("Не найден счет: " + accountId)))
                 .doOnNext(account -> {
                     if (account.getAmount() < amount) {
                         throw new NotEnoughMoneyException();

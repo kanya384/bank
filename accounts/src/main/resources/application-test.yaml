@@ -14,6 +14,9 @@ spring:
     user: test
     password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  cloud:
+    consul:
+      enabled: false
   security:
     oauth2:
       resourceserver:

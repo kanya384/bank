@@ -7,15 +7,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.accounts.dto.user.*;
 import ru.laurkan.bank.accounts.exception.UserNotFoundException;
-import ru.laurkan.bank.accounts.mapper.AccountMapper;
 import ru.laurkan.bank.accounts.mapper.UserMapper;
-import ru.laurkan.bank.accounts.model.Account;
 import ru.laurkan.bank.accounts.model.User;
-import ru.laurkan.bank.accounts.repository.AccountRepository;
 import ru.laurkan.bank.accounts.repository.UserRepository;
 import ru.laurkan.bank.accounts.service.UserService;
-
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +18,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final AccountRepository accountRepository;
-    private final AccountMapper accountMapper;
 
 
     @Override
@@ -68,36 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<UsersAccountsResponseDTO> findAllUsersWithAccounts() {
-        return userRepository.findAll()
-                .map(userMapper::mapUserAccounts)
-                .collectList()
-                .zipWith(accountRepository.findAll()
-                        .collectList()
-                )
-                .flatMapMany(tuple -> {
-                    var users = tuple.getT1();
-                    var accounts = tuple.getT2();
-
-                    return Flux.fromIterable(mergeUsersAndAccounts(users, accounts));
-                })
-                .filter(user -> user.getAccounts() != null);
-    }
-
-    private Collection<UsersAccountsResponseDTO> mergeUsersAndAccounts(List<UsersAccountsResponseDTO> users,
-                                                                       List<Account> accounts) {
-        Map<Long, UsersAccountsResponseDTO> usersMap = new HashMap<>();
-        users.forEach(user -> {
-            usersMap.put(user.getId(), user);
-        });
-
-        accounts.forEach(account -> {
-            var user = usersMap.get(account.getUserId());
-            if (user.getAccounts() == null) {
-                user.setAccounts(new ArrayList<>());
-            }
-            user.getAccounts().add(accountMapper.map(account));
-        });
-
-        return usersMap.values();
+        return userRepository.findAllUsersWithExistingAccounts()
+                .map(userMapper::mapUserAccounts);
     }
 }
