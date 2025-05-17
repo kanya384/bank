@@ -1,0 +1,13 @@
+server:
+  port: 9010
+spring:
+  application:
+    name: blocker
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+  cloud:
+    consul:
+      enabled: false
