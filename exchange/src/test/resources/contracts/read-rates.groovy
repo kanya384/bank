@@ -7,7 +7,7 @@ Contract.make {
     description "Получить курсы валют"
     request {
         method 'GET'
-        url '/exchange/rates'
+        url '/exchange-rates'
     }
 
 

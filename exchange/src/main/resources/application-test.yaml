@@ -1,0 +1,28 @@
+server:
+  port: 9060
+spring:
+  application:
+    name: accounts
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/test
+    username: test
+    password: test
+  jpa:
+    show-sql: true
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/test
+    user: test
+    password: test
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  cloud:
+    consul:
+      enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG

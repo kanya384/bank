@@ -47,7 +47,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         };
     }
 
-    public double getRandomNumber(double min, double max) {
+    private double getRandomNumber(double min, double max) {
         return ((Math.random() * (max - min)) + min);
     }
 }
