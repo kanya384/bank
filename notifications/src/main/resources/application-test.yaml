@@ -1,16 +1,12 @@
 server:
   port: 9020
 mail:
-  config:
-    import: optional:file:.env[.properties]
   username: test
   password: test
   smtp:
     host: smtp.mail.ru
     port: 465
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     name: accounts
   r2dbc:
@@ -19,6 +15,9 @@ spring:
     password: password
   jpa:
     show-sql: true
+  cloud:
+    consul:
+      enabled: false
   liquibase:
     url: jdbc:postgresql://localhost:5432/notifications
     user: login
