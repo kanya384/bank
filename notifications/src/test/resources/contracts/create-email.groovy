@@ -13,9 +13,9 @@ Contract.make {
         }
 
         body(
-                "recipient": "test01@mail.ru",
-                "subject": "Тестовый заголовок",
-                "message": "Текст сообщения"
+                "recipient": anyEmail(),
+                "subject": anyNonEmptyString(),
+                "message": anyNonEmptyString()
         )
     }
 
@@ -29,9 +29,9 @@ Contract.make {
 
         body(
                 id: value(anyNumber()),
-                recipient: "test01@mail.ru",
-                subject: "Тестовый заголовок",
-                message: "Текст сообщения",
+                recipient: anyEmail(),
+                subject: anyNonEmptyString(),
+                message: anyNonEmptyString(),
                 sent: false,
                 createdAt: value(isoDateTime()),
                 modifiedAt: value(isoDateTime())

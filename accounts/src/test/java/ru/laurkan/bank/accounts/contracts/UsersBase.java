@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.laurkan.bank.accounts.AbstractTestContainer;
+import ru.laurkan.bank.accounts.model.Account;
+import ru.laurkan.bank.accounts.model.Currency;
 import ru.laurkan.bank.accounts.model.User;
 import ru.laurkan.bank.accounts.repository.AccountRepository;
 import ru.laurkan.bank.accounts.repository.UserRepository;
@@ -41,6 +43,12 @@ public abstract class UsersBase extends AbstractTestContainer {
                             .birth(LocalDate.of(1990, 6, 20))
                             .build())
                     .block();
+
+            accountRepository.save(Account.builder()
+                    .userId(1L)
+                    .amount(0.0)
+                    .currency(Currency.RUB)
+                    .build()).block();
         }
     }
 

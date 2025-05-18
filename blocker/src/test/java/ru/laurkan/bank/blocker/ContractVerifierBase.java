@@ -5,14 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "server.port = 0"
 )
-@DirtiesContext
 @Import(SecurityTestConfiguration.class)
+@ActiveProfiles("test")
 public abstract class ContractVerifierBase {
     @LocalServerPort
     int port;

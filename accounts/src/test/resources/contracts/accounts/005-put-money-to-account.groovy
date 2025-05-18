@@ -21,6 +21,10 @@ Contract.make {
     response {
         status 200
 
+        headers {
+            contentType(applicationJson())
+        }
+        
         body(
                 id: value(anyNumber()),
                 userId: 2,
