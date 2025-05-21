@@ -4,7 +4,7 @@ package contracts.users
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "Получить курсы валют"
+    description "Получить список курсов валют"
     request {
         method 'GET'
         url '/exchange-rates'
@@ -13,6 +13,9 @@ Contract.make {
 
     response {
         status 200
+        headers {
+            contentType(applicationJson())
+        }
         body([
                 [
                         currency: "RUB",

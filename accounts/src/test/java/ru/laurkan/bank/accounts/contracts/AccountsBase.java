@@ -53,6 +53,26 @@ public abstract class AccountsBase extends AbstractTestContainer {
                             .birth(LocalDate.of(1990, 6, 20))
                             .build())
                     .block();
+
+            userRepository.save(User.builder()
+                            .name("user3")
+                            .surname("surname3")
+                            .login("user3")
+                            .email("test03@mail.ru")
+                            .password("password")
+                            .birth(LocalDate.of(1990, 6, 20))
+                            .build())
+                    .block();
+
+            userRepository.save(User.builder()
+                            .name("user4")
+                            .surname("surname4")
+                            .login("user4")
+                            .email("test04@mail.ru")
+                            .password("password")
+                            .birth(LocalDate.of(1990, 6, 20))
+                            .build())
+                    .block();
         }
 
         count = accountRepository.count().block();
@@ -80,6 +100,18 @@ public abstract class AccountsBase extends AbstractTestContainer {
                     .userId(2L)
                     .amount(0.0)
                     .currency(Currency.CNY)
+                    .build()).block();
+
+            accountRepository.save(Account.builder()
+                    .userId(3L)
+                    .amount(10.0)
+                    .currency(Currency.RUB)
+                    .build()).block();
+
+            accountRepository.save(Account.builder()
+                    .userId(4L)
+                    .amount(0.0)
+                    .currency(Currency.RUB)
                     .build()).block();
         }
     }

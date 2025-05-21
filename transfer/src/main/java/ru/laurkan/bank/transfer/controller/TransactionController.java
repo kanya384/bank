@@ -2,6 +2,7 @@ package ru.laurkan.bank.transfer.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.transfer.dto.CreateTransactionRequestDTO;
@@ -17,6 +18,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/{type}")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<TransactionResponseDTO> create(@PathVariable("type") @ValidTransactionType String transactionType,
                                                @RequestBody @Valid CreateTransactionRequestDTO request) {
         var type = TransactionType.valueOf(transactionType.toUpperCase());

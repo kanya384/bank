@@ -13,6 +13,9 @@ Contract.make {
 
     response {
         status 200
+        headers {
+            contentType(applicationJson())
+        }
         body(
                 currency: "RUB",
                 rate: value(anyDouble()),
