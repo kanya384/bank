@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy
+    spec:
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4180
+              protocol: TCP
+          args:
+              - --provider=keycloak-oidc
+              - --email-domain=*
+              - --client-id=accounts
+              - --client-secret=IS2SzhjhjKoa3BaMSSdFa65XVQ92C31a
+              - --redirect-url=http://localhost:80
+              - --oidc-issuer-url=http://keycloak.test.local/realms/bank
+              - --silence-ping-logging
+              - --auth-logging=true
+              - --session-store-type=redis
+              - --set-xauthrequest=true
+              - --set-authorization-header=true
+              - --pass-authorization-header=true
+              - --pass-access-token=true
+              - --insecure-oidc-allow-unverified-email
+              - --show-debug-on-error
+              - --errors-to-info-log
+              - --cookie-secret=6oNHGunkngh3g8doPS9nbGSgkuyW37pyarG_BoexLI4=
+              - --cookie-httponly=false
+              - --force-json-errors
+              - --skip-jwt-bearer-tokens=true
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              value: ingress
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              value: IS2SzhjhjKoa3BaMSSdFa65XVQ92C31a
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              value: zTBum01F+fZmVntQutehXw==
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  ports:
+    - name: http
+      port: 4180
+      protocol: TCP
+      targetPort: 4180
+  selector:
+    app: oauth2-proxy
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-oauth2-proxy
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+spec:
+  rules:
+    - host: proxy.test.local
+      http:
+        paths:
+          - path: /oauth2
+            pathType: Prefix
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 4180
+  ingressClassName: nginx

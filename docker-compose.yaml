@@ -46,13 +46,15 @@ services:
     networks:
       - app-net
   accounts:
-    image: accounts
+    image: laurkan/accounts
     build:
       dockerfile: accounts/Dockerfile
       context: .
     environment:
-      SPRING_CONFIG_IMPORT: optional:consul:consul:8500
-      SPRING_CLOUD_CONSUL_HOST: discovery
+      SPRING_DATASOURCE_URL: postgresql://postgres:5432/accounts
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      KEYCLOAK_URL: localhost:8080
     depends_on:
       - consul
       - keycloak
@@ -60,7 +62,7 @@ services:
     networks:
       - app-net
   blocker:
-    image: blocker
+    image: laurkan/blocker
     container_name: blocker
     build:
       dockerfile: blocker/Dockerfile
@@ -75,7 +77,7 @@ services:
     networks:
       - app-net
   cash:
-    image: cash
+    image: laurkan/cash
     container_name: cash
     build:
       dockerfile: cash/Dockerfile
@@ -90,7 +92,7 @@ services:
     networks:
       - app-net
   exchange:
-    image: exchange
+    image: laurkan/exchange
     container_name: exchange
     build:
       dockerfile: exchange/Dockerfile
@@ -105,7 +107,7 @@ services:
     networks:
       - app-net
   exchange-generator:
-    image: exchange-generator
+    image: laurkan/exchange-generator
     container_name: exchange-generator
     build:
       dockerfile: exchange-generator/Dockerfile
@@ -120,7 +122,7 @@ services:
     networks:
       - app-net
   front:
-    image: front
+    image: laurkan/front
     container_name: front
     build:
       dockerfile: front/Dockerfile
@@ -154,7 +156,7 @@ services:
     networks:
       - app-net
   notifications:
-    image: notifications
+    image: laurkan/notifications
     container_name: notifications
     build:
       dockerfile: notifications/Dockerfile
@@ -169,7 +171,7 @@ services:
     networks:
       - app-net
   transfer:
-    image: transfer
+    image: laurkan/transfer
     container_name: transfer
     build:
       dockerfile: transfer/Dockerfile

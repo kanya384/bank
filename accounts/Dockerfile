@@ -13,4 +13,4 @@ COPY --from=builder /app/accounts/target/accounts.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["/app.jar"]

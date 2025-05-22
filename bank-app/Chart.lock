@@ -1,0 +1,15 @@
+dependencies:
+- name: accounts
+  repository: file://./charts/accounts
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.2.3
+- name: keycloak
+  repository: https://charts.bitnami.com/bitnami
+  version: 24.3.0
+- name: oauth2-proxy
+  repository: https://oauth2-proxy.github.io/manifests
+  version: 7.9.0
+digest: sha256:6674e88e47c2d7959fb5efbb361b3b02073ec83d7bdfd7f4f90dd461d9a9e4c3
+generated: "2025-05-22T11:33:04.00898+03:00"

@@ -1,32 +1,27 @@
 server:
   port: 9000
 spring:
-  config:
-    import: optional:consul:localhost:8500
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/accounts
-    username: ${pg_user}
-    password: ${pg_password}
+    url: r2dbc:${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/accounts
-    user: ${pg_user}
-    password: ${pg_password}
+    url: jdbc:${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
+          jwk-set-uri: http://${KEYCLOAK_URL}/realms/bank/protocol/openid-connect/certs
   cloud:
     consul:
-      host: localhost
-      port: 8500
-      discovery:
-        instance-id: custom-service-id
+      enabled: false
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG
