@@ -10,6 +10,10 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/accounts" # Local path reference
 
+  - name: oauth2proxy
+    version: "0.1.0"
+    repository: "file://./charts/oauth2proxy" # Local path reference
+
   - name: postgresql
     version: "14.2.3" # Using a specific known stable version from Bitnami history
     repository: "https://charts.bitnami.com/bitnami"
@@ -19,9 +23,3 @@ dependencies:
   - name: keycloak
     version: "24.3.0" # Using a specific known stable version from Bitnami history
     repository: "https://charts.bitnami.com/bitnami"
-
-  - name: oauth2-proxy
-    version: "7.9.0" # Using a specific known stable version from Bitnami history
-    repository: "https://oauth2-proxy.github.io/manifests"
-    alias: accounts-proxy
-    condition: accounts-proxy.enabled # Allow disabling if needed

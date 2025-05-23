@@ -185,3 +185,17 @@ services:
       - postgres
     networks:
       - app-net
+  oauth2-proxy:
+    image: laurkan/oauth2-proxy
+    build:
+      dockerfile: oauth2-proxy/Dockerfile
+      context: .
+    environment:
+      KEYCLOAK_URI: http://localhost:8080/realms/bank/protocol/openid-connect/token
+      UPSTREAM_URI: http://localhost:9000
+    depends_on:
+      - consul
+      - keycloak
+      - postgres
+    networks:
+      - app-net

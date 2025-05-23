@@ -23,6 +23,7 @@
         <module>clients</module>
         <module>exchange</module>
         <module>transfer</module>
+        <module>oauth2-proxy</module>
     </modules>
     <packaging>pom</packaging>
 

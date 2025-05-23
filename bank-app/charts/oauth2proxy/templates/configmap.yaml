@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "oauth2proxy.fullname" . }}
+  labels:
+    {{- include "oauth2proxy.labels" . | nindent 4 }}
+data:
+  {{- range $index, $client := .Values.config.clients }}
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ $client.clientId }}_PROVIDER: keycloak
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ $client.clientId }}_CLIENT-ID: {{ $client.clientId }}
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ $client.clientId }}_CLIENT-SECRET: {{ $client.clientSecret }} # move to secret
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ $client.clientId }}_SCOPE: profile
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ $client.clientId }}_authorization-grant-type: client_credentials
+  {{- end }}
+    UPSTREAM_URI: {{ tpl .Values.config.upstream_uri . | quote }}
+    KEYCLOAK_URI: {{ tpl .Values.config.keycloak_uri . | quote }}
+
+

@@ -67,38 +67,23 @@ accounts-db:
       enabled: true
       size: 1Gi # Small size for example
 
-accounts-proxy:
-  service:
-    portNumber: 9000
-  ingress:
-    enabled: true
-    className: "nginx"
-    path: /
-    pathType: Prefix
-    hosts:
-      - accounts.test.local
+oauth2proxy:
+  image:
+    repository: laurkan/oauth2-proxy
+    tag: "latest"
+    pullPolicy: IfNotPresent
+#  ingress:
+#    enabled: true
+#    className: "nginx"
+#    hosts:
+#      - host: accounts.test.local
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#    tls: [ ]
   config:
-    clientID: accounts
-    clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
-    cookieSecret: 6oNHGunkngh3g8doPS9nbGSgkuyW37pyarG_BoexLI4=
-    configFile: |-
-      email_domains = [ "*" ]
-      upstreams = [ "http://bank-app-accounts:9000" ] #set upstreams[] to match the backend service you want to protect
-  extraArgs:
-    provider: keycloak-oidc
-    oidc-issuer-url: "http://{{ .Release.Name }}-keycloak/realms/bank"
-    cookie-secret: 6oNHGunkngh3g8doPS9nbGSgkuyW37pyarG_BoexLI4=
-    skip-jwt-bearer-tokens: true
-    silence-ping-logging: true
-    auth-logging: true
-    set-xauthrequest: true
-    set-authorization-header: true
-    pass-authorization-header: true
-    pass-access-token: true
-    show-debug-on-error: true
-    errors-to-info-log: true
-    cookie-httponly: false
-    insecure-oidc-allow-unverified-email: true
-    force-json-errors: true
-    redis-insecure-skip-tls-verify: true
-    #insecure-oidc-skip-issuer-verification: true
+    clients:
+      - clientId: accounts
+        clientSecret: ejaCcoPlhth94SVjHB3qzplsj6eMVPO3
+    upstream_uri: "http://{{ .Release.Namespace }}-keycloak:80"
+    keycloak_uri: "http://{{ .Release.Namespace }}-keycloak:80"

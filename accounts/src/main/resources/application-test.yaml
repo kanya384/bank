@@ -4,15 +4,15 @@ spring:
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/test
-    username: test
-    password: test
+    url: r2dbc:postgresql://localhost:5432/accounts
+    username: postgres
+    password: password
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://localhost:5432/test
-    user: test
-    password: test
+    url: jdbc:postgresql://localhost:5432/accounts
+    user: postgres
+    password: password
     change-log: classpath:/db/changelog/db.changelog-master.xml
   cloud:
     consul:
