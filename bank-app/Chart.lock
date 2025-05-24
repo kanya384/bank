@@ -35,5 +35,14 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 14.2.3
-digest: sha256:653b434b008b2962d2ec804fcbaf87a612d7d683d8b92f66c1acb27ce4a2dd30
-generated: "2025-05-24T20:23:42.249223+03:00"
+- name: cash
+  repository: file://./charts/cash
+  version: 0.1.0
+- name: oauth2proxy
+  repository: file://./charts/oauth2proxy
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.2.3
+digest: sha256:d2261217758a48345a5a3b28321e2af91198e936f1bdaf3042c1baceeb85db90
+generated: "2025-05-24T21:17:34.354679+03:00"

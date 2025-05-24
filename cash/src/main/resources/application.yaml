@@ -2,36 +2,33 @@ server:
   port: 9050
 clients:
   accounts:
-    uri: ${gateway_service_url}/accounts
+    uri: ${GATEWAY_URL}/accounts
   blocker:
-    uri: ${gateway_service_url}/blocker
+    uri: ${GATEWAY_URL}/blocker
   notifications:
-    uri: ${gateway_service_url}/notifications
+    uri: ${GATEWAY_URL}/notifications
 spring:
-  config:
-    import: optional:consul:localhost:8500
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      enabled: false
   application:
     name: cash
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/cash
-    username: ${pg_user}
-    password: ${pg_password}
+    url: r2dbc:${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/cash
-    user: ${pg_user}
-    password: ${pg_password}
+    url: jdbc:${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
+          jwk-set-uri: ${KEYCLOAK_URL}
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG

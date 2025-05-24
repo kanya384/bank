@@ -244,3 +244,59 @@ notifications-proxy:
     clientSecret: kgijylmvKjrEuk2wIXi3GmA4u30iFFkD
     upstream_uri: "http://{{ .Release.Name }}-notifications:9020"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+
+cash:
+  replicaCount: 1
+  image:
+    repository: laurkan/cash # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  service:
+    type: ClusterIP
+    port: 9050
+  config:
+    database_url: "postgresql://{{ .Release.Name }}-cash-db:5432/cash"
+    database_username: "cash"
+    keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+
+
+cash-db:
+  enabled: true
+  auth:
+    database: cash
+    username: cash
+    password: "changeM3Customer!" # Example: Not recommended for production
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi # Small size for example
+
+cash-proxy:
+  service:
+    port: 8070
+  image:
+    repository: laurkan/oauth2-proxy
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    hosts:
+      - host: ingress-nginx-controller.ingress-nginx
+        paths:
+          - path: /cash(/|$)(.*)
+            pathType: Prefix
+      - host: bank.test.local
+        paths:
+          - path: /cash(/|$)(.*)
+            pathType: Prefix
+    tls: []
+  config:
+    clientId: cash
+    clientSecret: dMI5HAyzkdvkyPVXV5ijGMeHwqNHOSPt
+    upstream_uri: "http://{{ .Release.Name }}-cash:9050"
+    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
