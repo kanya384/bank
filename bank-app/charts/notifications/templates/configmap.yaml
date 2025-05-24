@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "notifications.fullname" . }}
+  labels:
+    {{- include "notifications.labels" . | nindent 4 }}
+data:
+  # Example: Generic key-value pairs from .Values.config
+  # Note: We process database_url separately below using tpl
+  {{- range $key, $value := .Values.config }}
+  {{- if ne $key "database_url" }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+
+  SPRING_DATASOURCE_URL: {{ tpl .Values.config.database_url . | quote }}
+  SPRING_DATASOURCE_USERNAME: {{ .Values.config.database_username | quote }}
+  KEYCLOAK_URL: {{ tpl .Values.config.keycloak_url . | quote }}
+  MAIL_USERNAME: {{ tpl .Values.config.mail_username . | quote }}
+  MAIL_PASSWORD: {{ tpl .Values.config.mail_password . | quote }} #move to secrets

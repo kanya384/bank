@@ -26,5 +26,14 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 14.2.3
-digest: sha256:018341fca3a76f6ceadabb1d077d82bc8075f2ae5d74ffb6d10f76b884abaf42
-generated: "2025-05-24T18:49:11.123143+03:00"
+- name: notifications
+  repository: file://./charts/notifications
+  version: 0.1.0
+- name: oauth2proxy
+  repository: file://./charts/oauth2proxy
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.2.3
+digest: sha256:653b434b008b2962d2ec804fcbaf87a612d7d683d8b92f66c1acb27ce4a2dd30
+generated: "2025-05-24T20:23:42.249223+03:00"

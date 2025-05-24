@@ -49,3 +49,18 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     alias: exchange-db # Alias to distinguish this instance
     condition: exchange-db.enabled # Allow disabling if needed
+
+  - name: notifications
+    version: "0.1.0"
+    repository: "file://./charts/notifications" # Local path reference
+
+  - name: oauth2proxy
+    version: "0.1.0"
+    alias: notifications-proxy # Alias to distinguish this instanc
+    repository: "file://./charts/oauth2proxy" # Local path reference
+
+  - name: postgresql
+    version: "14.2.3" # Using a specific known stable version from Bitnami history
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: notifications-db # Alias to distinguish this instance
+    condition: notifications-db.enabled # Allow disabling if needed
