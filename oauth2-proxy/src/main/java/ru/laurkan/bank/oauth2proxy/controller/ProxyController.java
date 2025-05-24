@@ -3,7 +3,6 @@ package ru.laurkan.bank.oauth2proxy.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -16,7 +15,7 @@ public class ProxyController {
     private final ProxyService proxyService;
 
     @RequestMapping(value = "/**")
-    public Mono<ResponseEntity<byte[]>> handleProxyRequest(ProxyExchange<byte[]> proxy, @RequestHeader("X-Upstream-Uri") String upstreamUri) {
-        return proxyService.doProxy(upstreamUri, proxy);
+    public Mono<ResponseEntity<byte[]>> handleProxyRequest(ProxyExchange<byte[]> proxy) {
+        return proxyService.doProxy(proxy);
     }
 }

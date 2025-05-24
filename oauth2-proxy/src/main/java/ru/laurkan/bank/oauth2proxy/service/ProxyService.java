@@ -5,5 +5,5 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
 public interface ProxyService {
-    Mono<ResponseEntity<byte[]>> doProxy(String upstreamUri, ProxyExchange<byte[]> proxy);
+    Mono<ResponseEntity<byte[]>> doProxy(ProxyExchange<byte[]> proxy);
 }

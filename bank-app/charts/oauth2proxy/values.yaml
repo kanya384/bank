@@ -63,12 +63,8 @@ tolerations: [ ]
 affinity: { }
 
 config:
-  clients:
-    - clientId: accounts
-      clientSecret: topsecret
-    - clientId: blocker
-      clientSecret: topsecret
-    - clientId: cash
-      clientSecret: topsecret
+  clientId: accounts
+  clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
   upstream_uri: "http://localhost"
   keycloak_uri: "http://{{ .Release.Namespace }}-keycloak:80"
+

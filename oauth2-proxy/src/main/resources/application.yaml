@@ -1,5 +1,7 @@
 server:
   port: 8070
+upstream-uri: ${UPSTREAM_URI}
+client-id: ${CLIENT_ID}
 spring:
   application:
     name: oauth2-proxy
@@ -15,7 +17,7 @@ spring:
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_URI}
-        registration:
+#        registration:
 #        registration:
 #          accounts:
 #            provider: keycloak

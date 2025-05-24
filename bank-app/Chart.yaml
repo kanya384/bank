@@ -12,6 +12,7 @@ dependencies:
 
   - name: oauth2proxy
     version: "0.1.0"
+    alias: accounts-proxy # Alias to distinguish this instanc
     repository: "file://./charts/oauth2proxy" # Local path reference
 
   - name: postgresql

@@ -36,38 +36,26 @@ accounts:
   service:
     type: ClusterIP
     port: 9000
-  ingress:
-    enabled: false
-#    className: "nginx"
-#    hosts:
-#      - host: accounts.test.local
-#        paths:
-#          - path: /
-#            pathType: Prefix
-#    tls: [ ]
   config:
-    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
     database_url: "postgresql://{{ .Release.Name }}-accounts-db:5432/accounts"
-    # Secret reference for password is more secure
     database_username: "accounts"
-    keycloak_url: "http://{{ .Release.Namespace }}-keycloak:80"
+    keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
 
 
 accounts-db:
   enabled: true
-  # Override values from the official postgresql chart
   auth:
     database: accounts
     username: accounts
-    # Use existingSecret or provide password (less secure for production)
-    # existingSecret: "{{ .Release.Name }}-customer-db-postgresql" # Name of the secret to use/create
     password: "changeM3Customer!" # Example: Not recommended for production
   primary:
     persistence:
       enabled: true
       size: 1Gi # Small size for example
 
-oauth2proxy:
+accounts-proxy:
+  service:
+    port: 8070
   image:
     repository: laurkan/oauth2-proxy
     tag: "latest"
@@ -76,19 +64,16 @@ oauth2proxy:
     enabled: true
     className: "nginx"
     annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/configuration-snippet: |
-        more_set_headers "X-Upstream-Uri: http://bank-app-$1:9000";
       nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
       - host: bank.test.local
         paths:
-          - path: /accounts
+          - path: /accounts(/|$)(.*)
             pathType: Prefix
-    tls: [ ]
+    tls: []
   config:
-    clients:
-      - clientId: accounts
-        clientSecret: ejaCcoPlhth94SVjHB3qzplsj6eMVPO3
-    upstream_uri: "http://{{ .Release.Namespace }}-keycloak:80"
-    keycloak_uri: "http://{{ .Release.Namespace }}-keycloak:80"
+    clientId: accounts
+    clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
+    upstream_uri: "http://{{ .Release.Name }}-accounts:9000"
+    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
