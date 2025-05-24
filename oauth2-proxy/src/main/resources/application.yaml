@@ -1,6 +1,5 @@
 server:
   port: 8070
-upstream-uri: ${UPSTREAM_URI}
 spring:
   application:
     name: oauth2-proxy

@@ -1,7 +1,7 @@
 package ru.laurkan.bank.oauth2proxy.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -12,17 +12,17 @@ import reactor.core.publisher.Mono;
 import ru.laurkan.bank.oauth2proxy.exception.ClientNotDefinedException;
 import ru.laurkan.bank.oauth2proxy.service.ProxyService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProxyServiceImpl implements ProxyService {
-    @Value("${upstream-uri}")
-    private String upstreamUri;
 
     private final ReactiveOAuth2AuthorizedClientManager manager;
     private final ReactiveClientRegistrationRepository clientRegistrationRepository;
 
     @Override
-    public Mono<ResponseEntity<byte[]>> doProxy(ProxyExchange<byte[]> proxy) {
+    public Mono<ResponseEntity<byte[]>> doProxy(String upstreamUri, ProxyExchange<byte[]> proxy) {
+        log.info("Upstream-uri: " + upstreamUri);
         var clientId = getRootPath(proxy.path());
         return clientRegistrationRepository.findByRegistrationId(clientId)
                 .switchIfEmpty(Mono.error(new ClientNotDefinedException(clientId)))
