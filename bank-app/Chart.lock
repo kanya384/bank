@@ -44,5 +44,14 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 14.2.3
-digest: sha256:d2261217758a48345a5a3b28321e2af91198e936f1bdaf3042c1baceeb85db90
-generated: "2025-05-24T21:17:34.354679+03:00"
+- name: transfer
+  repository: file://./charts/transfer
+  version: 0.1.0
+- name: oauth2proxy
+  repository: file://./charts/oauth2proxy
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.2.3
+digest: sha256:2fe564bbc2cd35764c823dafb94b076515092f37635d191b7fe8d6fc58e7fe73
+generated: "2025-05-24T21:50:53.024966+03:00"

@@ -300,3 +300,60 @@ cash-proxy:
     clientSecret: dMI5HAyzkdvkyPVXV5ijGMeHwqNHOSPt
     upstream_uri: "http://{{ .Release.Name }}-cash:9050"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+
+
+transfer:
+  replicaCount: 1
+  image:
+    repository: laurkan/transfer # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  service:
+    type: ClusterIP
+    port: 9090
+  config:
+    database_url: "postgresql://{{ .Release.Name }}-transfer-db:5432/transfer"
+    database_username: "transfer"
+    keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+
+
+transfer-db:
+  enabled: true
+  auth:
+    database: transfer
+    username: transfer
+    password: "changeM3Customer!" # Example: Not recommended for production
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi # Small size for example
+
+transfer-proxy:
+  service:
+    port: 8070
+  image:
+    repository: laurkan/oauth2-proxy
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    hosts:
+      - host: ingress-nginx-controller.ingress-nginx
+        paths:
+          - path: /transfer(/|$)(.*)
+            pathType: Prefix
+      - host: bank.test.local
+        paths:
+          - path: /transfer(/|$)(.*)
+            pathType: Prefix
+    tls: []
+  config:
+    clientId: transfer
+    clientSecret: jeEFDI3PdaQCyc6pHdPgmwUoyCKuBLFI
+    upstream_uri: "http://{{ .Release.Name }}-transfer:9090"
+    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"

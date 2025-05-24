@@ -80,3 +80,18 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     alias: cash-db # Alias to distinguish this instance
     condition: cash-db.enabled # Allow disabling if needed
+
+  - name: transfer
+    version: "0.1.0"
+    repository: "file://./charts/transfer" # Local path reference
+
+  - name: oauth2proxy
+    version: "0.1.0"
+    alias: transfer-proxy # Alias to distinguish this instanc
+    repository: "file://./charts/oauth2proxy" # Local path reference
+
+  - name: postgresql
+    version: "14.2.3" # Using a specific known stable version from Bitnami history
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: transfer-db # Alias to distinguish this instance
+    condition: transfer-db.enabled # Allow disabling if needed

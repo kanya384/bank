@@ -2,38 +2,35 @@ server:
   port: 9090
 clients:
   accounts:
-    uri: ${gateway_service_url}/accounts
+    uri: ${GATEWAY_URL}/accounts
   blocker:
-    uri: ${gateway_service_url}/blocker
+    uri: ${GATEWAY_URL}/blocker
   notifications:
-    uri: ${gateway_service_url}/notifications
+    uri: ${GATEWAY_URL}/notifications
   exchange:
-    uri: ${gateway_service_url}/exchange
+    uri: ${GATEWAY_URL}/exchange
 spring:
-  config:
-    import: optional:consul:localhost:8500
-  cloud:
-    consul:
-      host: localhost
-      port: 8085
   application:
     name: transfer
+  cloud:
+    consul:
+      enabled: false
   r2dbc:
-    url: r2dbc:postgresql://${pg_url}/transfers
-    username: ${pg_user}
-    password: ${pg_password}
+    url: r2dbc:${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://${pg_url}/transfers
-    user: ${pg_user}
-    password: ${pg_password}
+    url: jdbc:${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
+          jwk-set-uri: ${KEYCLOAK_URL}
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG
