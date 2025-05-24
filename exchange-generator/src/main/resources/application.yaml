@@ -2,18 +2,15 @@ server:
   port: 9070
 clients:
   exchange:
-    uri: ${gateway_service_url}/exchange
+    uri: ${GATEWAY_URL}/exchange
 spring:
-  config:
-    import: optional:consul:localhost:8500
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      enabled: false
   application:
     name: exchange-generator
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${keycloak_url}/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: ${KEYCLOAK_URL}

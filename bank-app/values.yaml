@@ -64,6 +64,10 @@ accounts-proxy:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
+      - host: ingress-nginx-controller.ingress-nginx
+        paths:
+          - path: /accounts(/|$)(.*)
+            pathType: Prefix
       - host: bank.test.local
         paths:
           - path: /accounts(/|$)(.*)
@@ -101,6 +105,10 @@ blocker-proxy:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
+      - host: ingress-nginx-controller.ingress-nginx
+        paths:
+          - path: /blocker(/|$)(.*)
+            pathType: Prefix
       - host: bank.test.local
         paths:
           - path: /blocker(/|$)(.*)
@@ -152,6 +160,10 @@ exchange-proxy:
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
+      - host: ingress-nginx-controller.ingress-nginx
+        paths:
+          - path: /exchange(/|$)(.*)
+            pathType: Prefix
       - host: bank.test.local
         paths:
           - path: /exchange(/|$)(.*)
@@ -162,3 +174,16 @@ exchange-proxy:
     clientSecret: FL3OooGbSRgtd9V5reCrMSP0zzARaABc
     upstream_uri: "http://{{ .Release.Name }}-exchange:9060"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+
+exchangegenerator:
+  replicaCount: 1
+  image:
+    repository: laurkan/exchange-generator # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  service:
+    type: ClusterIP
+    port: 9070
+  config:
+    gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+    keycloak_url: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs"
