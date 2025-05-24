@@ -357,3 +357,25 @@ transfer-proxy:
     clientSecret: jeEFDI3PdaQCyc6pHdPgmwUoyCKuBLFI
     upstream_uri: "http://{{ .Release.Name }}-transfer:9090"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+
+front:
+  replicaCount: 1
+  image:
+    repository: laurkan/front # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: main.test.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: [ ]
+  service:
+    type: ClusterIP
+    port: 80
+  config:
+    keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    gateway_url: "http://ingress-nginx-controller.ingress-nginx"

@@ -3,3 +3,9 @@ server:
 clients:
   accounts:
     uri: http://localhost:9000
+  exchange:
+    uri: http://localhost:9000/exchange
+  cash:
+    uri: http://localhost:9000/cash
+  transfer:
+    uri: http://localhost:9000/transfer

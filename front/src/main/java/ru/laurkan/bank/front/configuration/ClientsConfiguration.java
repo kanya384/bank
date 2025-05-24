@@ -3,8 +3,6 @@ package ru.laurkan.bank.front.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.laurkan.bank.clients.accounts.AccountsClient;
 import ru.laurkan.bank.clients.cash.CashClient;
@@ -26,11 +24,8 @@ public class ClientsConfiguration {
     private String transferUri;
 
     @Bean
-    public WebClient webClient(ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
-        var oauth2 = new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-        oauth2.setDefaultClientRegistrationId("gateway");
+    public WebClient webClient() {
         return WebClient.builder()
-                .filter(oauth2)
                 .build();
     }
 

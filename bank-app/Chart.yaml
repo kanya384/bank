@@ -95,3 +95,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     alias: transfer-db # Alias to distinguish this instance
     condition: transfer-db.enabled # Allow disabling if needed
+
+  - name: front
+    version: "0.1.0"
+    repository: "file://./charts/front" # Local path reference
