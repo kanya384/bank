@@ -1,8 +1,6 @@
 global:
   domain: bank.app # Example domain for ingress
 
-replicaCount: 1
-
 keycloak:
   image:
     tag: "26.2.4" #default image crashes on m4
@@ -25,14 +23,13 @@ keycloak:
     ingressClassName: "nginx"
     path: /
     hostname: bank-app-keycloak
+
 accounts:
   replicaCount: 1
   image:
-    # --- REVERTED TO LOCAL REPO ---
     repository: laurkan/accounts # Removed registry prefix
     tag: "latest"
     pullPolicy: IfNotPresent # Use IfNotPresent for local images
-    # -----------------------------
   service:
     type: ClusterIP
     port: 9000
@@ -76,4 +73,41 @@ accounts-proxy:
     clientId: accounts
     clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
     upstream_uri: "http://{{ .Release.Name }}-accounts:9000"
+    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+
+blocker:
+  replicaCount: 1
+  image:
+    repository: laurkan/blocker # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  service:
+    type: ClusterIP
+    port: 9010
+  config:
+    keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+
+blocker-proxy:
+  service:
+    port: 8070
+  image:
+    repository: laurkan/oauth2-proxy
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    hosts:
+      - host: bank.test.local
+        paths:
+          - path: /blocker(/|$)(.*)
+            pathType: Prefix
+    tls: []
+  config:
+    clientId: blocker
+    clientSecret: QIITHOGgLL83pJ6mLsjdqfbHgULivPUs
+    upstream_uri: "http://{{ .Release.Name }}-blocker:9010"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"

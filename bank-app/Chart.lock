@@ -1,4 +1,7 @@
 dependencies:
+- name: keycloak
+  repository: https://charts.bitnami.com/bitnami
+  version: 24.3.0
 - name: accounts
   repository: file://./charts/accounts
   version: 0.1.0
@@ -8,8 +11,11 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 14.2.3
-- name: keycloak
-  repository: https://charts.bitnami.com/bitnami
-  version: 24.3.0
-digest: sha256:c8e0fd86308bb23a0c9e74b8023e0b896b1d4c489f86c72281bed6b752d612be
-generated: "2025-05-24T14:17:56.677218+03:00"
+- name: blocker
+  repository: file://./charts/blocker
+  version: 0.1.0
+- name: oauth2proxy
+  repository: file://./charts/oauth2proxy
+  version: 0.1.0
+digest: sha256:187af3a53f5ee375d2c5c70d03591d889568658a53067ba5c627ec357db80673
+generated: "2025-05-24T15:06:52.09223+03:00"

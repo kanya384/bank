@@ -1,7 +1,7 @@
 server:
   port: 8070
-upstream-uri: http://localhost:9000
-client-id: accounts
+upstream-uri: http://localhost:9010
+client-id: blocker
 spring:
   application:
     name: oauth2-proxy
@@ -18,10 +18,10 @@ spring:
           keycloak:
             token-uri: http://localhost:8080/realms/bank/protocol/openid-connect/token
         registration:
-          accounts:
+          blocker:
             provider: keycloak
-            client-id: accounts
-            client-secret: ejaCcoPlhth94SVjHB3qzplsj6eMVPO3
+            client-id: blocker
+            client-secret: 2wSCmpPd2wlXWO5LgZV3JTQ2njtqhOQq
             scope: profile
             authorization-grant-type: client_credentials
 #          blocker:

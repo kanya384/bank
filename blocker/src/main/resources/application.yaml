@@ -1,16 +1,13 @@
 server:
   port: 9010
 spring:
-  config:
-    import: optional:consul:localhost:8500
   application:
     name: blocker
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${keycloak_url}/realms/bank/protocol/openid-connect/certs
+          jwk-set-uri: ${KEYCLOAK_URL}
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      enabled: false

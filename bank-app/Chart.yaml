@@ -6,6 +6,10 @@ version: 0.1.0
 appVersion: "1.0.0"
 
 dependencies:
+  - name: keycloak
+    version: "24.3.0" # Using a specific known stable version from Bitnami history
+    repository: "https://charts.bitnami.com/bitnami"
+
   - name: accounts
     version: "0.1.0"
     repository: "file://./charts/accounts" # Local path reference
@@ -21,6 +25,11 @@ dependencies:
     alias: accounts-db # Alias to distinguish this instance
     condition: accounts-db.enabled # Allow disabling if needed
 
-  - name: keycloak
-    version: "24.3.0" # Using a specific known stable version from Bitnami history
-    repository: "https://charts.bitnami.com/bitnami"
+  - name: blocker
+    version: "0.1.0"
+    repository: "file://./charts/blocker" # Local path reference
+
+  - name: oauth2proxy
+    version: "0.1.0"
+    alias: blocker-proxy # Alias to distinguish this instanc
+    repository: "file://./charts/oauth2proxy" # Local path reference
