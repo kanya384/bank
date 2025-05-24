@@ -33,3 +33,19 @@ dependencies:
     version: "0.1.0"
     alias: blocker-proxy # Alias to distinguish this instanc
     repository: "file://./charts/oauth2proxy" # Local path reference
+
+
+  - name: exchange
+    version: "0.1.0"
+    repository: "file://./charts/exchange" # Local path reference
+
+  - name: oauth2proxy
+    version: "0.1.0"
+    alias: exchange-proxy # Alias to distinguish this instanc
+    repository: "file://./charts/oauth2proxy" # Local path reference
+
+  - name: postgresql
+    version: "14.2.3" # Using a specific known stable version from Bitnami history
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: exchange-db # Alias to distinguish this instance
+    condition: exchange-db.enabled # Allow disabling if needed

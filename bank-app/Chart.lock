@@ -17,5 +17,14 @@ dependencies:
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
-digest: sha256:187af3a53f5ee375d2c5c70d03591d889568658a53067ba5c627ec357db80673
-generated: "2025-05-24T15:06:52.09223+03:00"
+- name: exchange
+  repository: file://./charts/exchange
+  version: 0.1.0
+- name: oauth2proxy
+  repository: file://./charts/oauth2proxy
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.2.3
+digest: sha256:018341fca3a76f6ceadabb1d077d82bc8075f2ae5d74ffb6d10f76b884abaf42
+generated: "2025-05-24T18:49:11.123143+03:00"

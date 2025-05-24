@@ -35,14 +35,6 @@ public class ProxyServiceImpl implements ProxyService {
                 );
     }
 
-    private String getRootPath(String path) {
-        String[] paths = path.split("/");
-        if (paths.length < 2) {
-            return "";
-        }
-        return paths[1];
-    }
-
     private Mono<String> getTokenForClient(String clientId) {
         OAuth2AuthorizeRequest req = OAuth2AuthorizeRequest
                 .withClientRegistrationId(clientId)
