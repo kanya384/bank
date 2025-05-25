@@ -65,6 +65,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-main-db
                   key: postgres-password
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "notifications.fullname" . }}
+                  key: password
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}

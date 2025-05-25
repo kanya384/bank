@@ -17,4 +17,3 @@ data:
   SPRING_DATASOURCE_USERNAME: {{ .Values.config.database_username | quote }}
   KEYCLOAK_URL: {{ tpl .Values.config.keycloak_url . | quote }}
   MAIL_USERNAME: {{ tpl .Values.config.mail_username . | quote }}
-  MAIL_PASSWORD: {{ tpl .Values.config.mail_password . | quote }} #move to secrets

@@ -198,7 +198,7 @@ notifications:
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     mail_username: kanya384@mail.ru
-    mail_password: up1qKNZxxRHAnSKs0GXs # move to secrets
+    mail_password: up1qKNZxxRHAnSKs0GXs
 
 
 notifications-proxy:
