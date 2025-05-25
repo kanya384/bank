@@ -40,3 +40,5 @@ storage/
 
 ### Mac OS ###
 .DS_Store
+
+jenkins/jenkins_home

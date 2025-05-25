@@ -7,8 +7,6 @@ spring:
     url: r2dbc:postgresql://localhost:5432/accounts
     username: postgres
     password: password
-  jpa:
-    show-sql: true
   liquibase:
     url: jdbc:postgresql://localhost:5432/accounts
     user: postgres
@@ -22,7 +20,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG

@@ -7,8 +7,6 @@ spring:
     url: r2dbc:${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-  jpa:
-    show-sql: true
   liquibase:
     url: jdbc:${SPRING_DATASOURCE_URL}
     user: ${SPRING_DATASOURCE_USERNAME}
@@ -22,7 +20,3 @@ spring:
   cloud:
     consul:
       enabled: false
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
