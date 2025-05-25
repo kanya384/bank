@@ -23,38 +23,26 @@ dependencies:
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 14.2.3
 - name: notifications
   repository: file://./charts/notifications
   version: 0.1.0
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 14.2.3
 - name: cash
   repository: file://./charts/cash
   version: 0.1.0
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 14.2.3
 - name: transfer
   repository: file://./charts/transfer
   version: 0.1.0
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 14.2.3
 - name: front
   repository: file://./charts/front
   version: 0.1.0
-digest: sha256:935e0c1fde2a0f9f759acfad1f452dae95ddd9cc696d0589aedc63de39e93165
-generated: "2025-05-24T22:14:03.971924+03:00"
+digest: sha256:84dae8bc21fef477b70bf138229027628b9bb9962dbcf88c4461c1fee211d46e
+generated: "2025-05-25T09:33:04.582406+03:00"

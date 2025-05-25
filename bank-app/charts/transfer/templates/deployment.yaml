@@ -63,8 +63,8 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-transfer-db
-                  key: password
+                  name: {{ .Release.Name }}-main-db
+                  key: postgres-password
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
