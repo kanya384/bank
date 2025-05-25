@@ -14,7 +14,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(WebExchangeBindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleParameterNotValidException(final WebExchangeBindException e) {
         List<FieldError> errors = e.getFieldErrors();

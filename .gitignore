@@ -41,4 +41,5 @@ storage/
 ### Mac OS ###
 .DS_Store
 
-jenkins/jenkins_home
+jenkins/jenkins-docker-certs
+jenkins/jenkins-data

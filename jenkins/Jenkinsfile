@@ -5,70 +5,21 @@ pipeline {
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         DB_PASSWORD     = credentials('DB_PASSWORD')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
-        DB_NAME         = 'mydb'
-        DB_USER         = 'myuser'
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
+        KEYCLOAK_ACCOUNTS_SECRET = credentials('KEYCLOAK_ACCOUNTS_SECRET')
+        KEYCLOAK_BLOCKER_SECRET = credentials('KEYCLOAK_BLOCKER_SECRET')
+        KEYCLOAK_CASH_SECRET = credentials('KEYCLOAK_CASH_SECRET')
+        KEYCLOAK_EXCHANGE_SECRET = credentials('KEYCLOAK_EXCHANGE_SECRET')
+        KEYCLOAK_NOTIFICATIONS_SECRET = credentials('KEYCLOAK_NOTIFICATIONS_SECRET')
+        KEYCLOAK_TRANSFER_SECRET = credentials('KEYCLOAK_TRANSFER_SECRET')
+
     }
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('Accounts Service') {
-                    steps {
-                        dir('accounts') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Blocker Service') {
-                    steps {
-                        dir('blocker') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Cash Service') {
-                    steps {
-                        dir('cash') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Exchange Service') {
-                    steps {
-                        dir('exchange') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Exchange Generator Service') {
-                    steps {
-                        dir('exchange-generator') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Front Service') {
-                    steps {
-                        dir('front') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Notifications Service') {
-                    steps {
-                        dir('notifications') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
-                stage('Transfer Service') {
-                    steps {
-                        dir('transfer') {
-                            sh 'mvn clean test'
-                        }
-                    }
-                }
+            steps {
+                sh 'mvn clean install -pl exchange'
+                sh 'mvn clean install -am' //install чтобы сгенерились стабы spring-contract для тестов
             }
         }
 
@@ -101,103 +52,55 @@ pipeline {
                     docker push ${DOCKER_REGISTRY}/front:${IMAGE_TAG}
                     docker push ${DOCKER_REGISTRY}/notifications:${IMAGE_TAG}
                     docker push ${DOCKER_REGISTRY}/transfer:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/oauth2-proxy:${IMAGE_TAG}
                     """
                 }
-            }
-        }
-
-        stage('Install PostgreSQL to TEST') {
-            steps {
-                sh """
-                helm repo add bitnami https://charts.bitnami.com/bitnami
-                helm repo update
-
-                helm upgrade --install postgres bitnami/postgresql \\
-                  --namespace test --create-namespace \\
-                  --set auth.database=${DB_NAME} \\
-                  --set auth.username=${DB_USER} \\
-                  --set auth.password=${DB_PASSWORD}
-                """
-            }
-        }
-
-        stage('Create DB Secrets for TEST') {
-            steps {
-                sh """
-                kubectl create secret generic test-main-db \\
-                  --from-literal=password=${DB_PASSWORD} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-accounts-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-blocker-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-cash-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_CASH_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-exchange-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-notifications-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic test-cash-proxy \\
-                  --from-literal=clientSecret=${KEYCLOAK_CASH_SECRET} \\
-                  -n test --dry-run=client -o yaml | kubectl apply -f -
-
-                """
             }
         }
 
         stage('Helm Deploy to TEST') {
             steps {
                 sh """
-                helm upgrade --install accounts bank-app/charts/accounts \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/accounts \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install blocker bank-app/charts/blocker \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/blocker \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install cash bank-app/charts/cash \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/cash \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install exchange bank-app/charts/exchange \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/exchange \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install exchange-generator bank-app/charts/exchange-generator \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/exchange-generator \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install front bank-app/charts/front \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/front \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install notifications bank-app/charts/notifications \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/notifications \\
-                  --set image.tag=${IMAGE_TAG}
-
-                helm upgrade --install transfer bank-app/charts/transfer \\
-                  --namespace test --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/transfer \\
-                  --set image.tag=${IMAGE_TAG}
+                helm upgrade --install bank-app bank-app/. \\
+                                     --namespace test --create-namespace \\
+                                     --set main-db.auth.password=${DB_PASSWORD} \\
+                					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
+                					 --set accounts.image.tag=${IMAGE_TAG} \\
+                					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
+                					 --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
+                					 --set blocker.image.tag=${IMAGE_TAG} \\
+                					 --set blocker-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set blocker-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set blocker-proxy.config.clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
+                					 --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
+                					 --set cash.image.tag=${IMAGE_TAG} \\
+                					 --set cash-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set cash-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set cash-proxy.config.clientSecret=${KEYCLOAK_CASH_SECRET} \\
+                					 --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
+                					 --set exchange.image.tag=${IMAGE_TAG} \\
+                					 --set exchange-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set exchange-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set exchange-proxy.config.clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
+                					 --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
+                					 --set notifications.image.tag=${IMAGE_TAG} \\
+                					 --set notifications-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set notifications-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set notifications-proxy.config.clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set transfer.image.repository=${DOCKER_REGISTRY}/transfer \\
+                                     --set transfer.image.tag=${IMAGE_TAG} \\
+                                     --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                                     --set transfer-proxy.image.tag=${IMAGE_TAG} \\
+                                     --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
+                					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                					 --set front.image.repository=${DOCKER_REGISTRY}/front:${IMAGE_TAG} \\
+                					 --set front.image.tag=${IMAGE_TAG} \\
+                					 --set front.ingress.hosts[0].host=main.test.local \\
+                					 --set front.ingress.hosts[0].paths[0].path="/" \\
+                                     --set front.ingress.hosts[0].paths[0].pathType="Prefix"
                 """
             }
         }
@@ -208,52 +111,49 @@ pipeline {
             }
         }
 
-        stage('Install PostgreSQL to PROD') {
-            steps {
-                sh """
-                helm upgrade --install postgres bitnami/postgresql \\
-                  --namespace prod --create-namespace \\
-                  --set auth.database=${DB_NAME} \\
-                  --set auth.username=${DB_USER} \\
-                  --set auth.password=${DB_PASSWORD}
-                """
-            }
-        }
-
-        stage('Create DB Secrets for PROD') {
-            steps {
-                sh """
-                kubectl create secret generic customer-service-customer-db \\
-                  --from-literal=password=${DB_PASSWORD} \\
-                  -n prod --dry-run=client -o yaml | kubectl apply -f -
-
-                kubectl create secret generic order-service-order-db \\
-                  --from-literal=password=${DB_PASSWORD} \\
-                  -n prod --dry-run=client -o yaml | kubectl apply -f -
-                """
-            }
-        }
-
         stage('Helm Deploy to PROD') {
             steps {
                 sh """
-                helm upgrade --install customer-service my-microservices-app/charts/customer-service \\
-                  --namespace prod --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/customer-service \\
-                  --set image.tag=${IMAGE_TAG} \\
-                  --set ingress.enabled=true \\
-                  --set ingress.hosts[0].host=customer.prod.local \\
-                  --set ingress.hosts[0].paths[0].path="/" \\
-                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
-
-                helm upgrade --install order-service my-microservices-app/charts/order-service \\
-                  --namespace prod --create-namespace \\
-                  --set image.repository=${DOCKER_REGISTRY}/order-service \\
-                  --set image.tag=${IMAGE_TAG} \\
-                  --set ingress.enabled=true \\
-                  --set ingress.hosts[0].host=order.prod.local \\
-                  --set ingress.hosts[0].paths[0].path="/" \\
-                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+                helm upgrade --install bank-app bank-app/. \\
+                                     --namespace test --create-namespace \\
+                                     --set main-db.auth.password=${DB_PASSWORD} \\
+                					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
+                					 --set accounts.image.tag=${IMAGE_TAG} \\
+                					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
+                					 --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
+                					 --set blocker.image.tag=${IMAGE_TAG} \\
+                					 --set blocker-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set blocker-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set blocker-proxy.config.clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
+                					 --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
+                					 --set cash.image.tag=${IMAGE_TAG} \\
+                					 --set cash-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set cash-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set cash-proxy.config.clientSecret=${KEYCLOAK_CASH_SECRET} \\
+                					 --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
+                					 --set exchange.image.tag=${IMAGE_TAG} \\
+                					 --set exchange-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set exchange-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set exchange-proxy.config.clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
+                					 --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
+                					 --set notifications.image.tag=${IMAGE_TAG} \\
+                					 --set notifications-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                					 --set notifications-proxy.image.tag=${IMAGE_TAG} \\
+                					 --set notifications-proxy.config.clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set transfer.image.repository=${DOCKER_REGISTRY}/transfer \\
+                                     --set transfer.image.tag=${IMAGE_TAG} \\
+                                     --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                                     --set transfer-proxy.image.tag=${IMAGE_TAG} \\
+                                     --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
+                					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                					 --set front.image.repository=${DOCKER_REGISTRY}/front:${IMAGE_TAG} \\
+                					 --set front.image.tag=${IMAGE_TAG} \\
+                					 --set front.ingress.hosts[0].host=main.prod.local \\
+                					 --set front.ingress.hosts[0].paths[0].path="/" \\
+                                     --set front.ingress.hosts[0].paths[0].pathType="Prefix"
                 """
             }
         }

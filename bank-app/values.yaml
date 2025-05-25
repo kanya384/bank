@@ -83,7 +83,7 @@ accounts-proxy:
     tls: []
   config:
     clientId: accounts
-    clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-accounts:9000"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 
@@ -124,7 +124,7 @@ blocker-proxy:
     tls: []
   config:
     clientId: blocker
-    clientSecret: QIITHOGgLL83pJ6mLsjdqfbHgULivPUs
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-blocker:9010"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 
@@ -167,7 +167,7 @@ exchange-proxy:
     tls: []
   config:
     clientId: exchange
-    clientSecret: FL3OooGbSRgtd9V5reCrMSP0zzARaABc
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-exchange:9060"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 
@@ -226,7 +226,7 @@ notifications-proxy:
     tls: []
   config:
     clientId: notifications
-    clientSecret: kgijylmvKjrEuk2wIXi3GmA4u30iFFkD
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-notifications:9020"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 
@@ -270,7 +270,7 @@ cash-proxy:
     tls: []
   config:
     clientId: cash
-    clientSecret: dMI5HAyzkdvkyPVXV5ijGMeHwqNHOSPt
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-cash:9050"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 
@@ -315,7 +315,7 @@ transfer-proxy:
     tls: []
   config:
     clientId: transfer
-    clientSecret: jeEFDI3PdaQCyc6pHdPgmwUoyCKuBLFI
+    clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-transfer:9090"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
 

@@ -1,10 +1,10 @@
 package ru.laurkan.bank.front.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -17,6 +17,6 @@ public class UpdateUserRequestDTO {
     private String name;
     @Email
     private String email;
-    @JsonFormat(pattern = "dd.MM.yyyy")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate birth;
 }

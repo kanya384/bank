@@ -26,6 +26,10 @@ Contract.make {
     response {
         status 400
 
+        headers {
+            contentType(applicationJson())
+        }
+
         body(
                 "code": "BAD_REQUEST",
                 "message": "Ошибка(-и) валидации: birth - Пользователь должен быть совершеннолетним"

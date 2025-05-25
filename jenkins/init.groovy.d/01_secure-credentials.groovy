@@ -19,6 +19,7 @@ def keycloakBlockerSecret = env['KEYCLOAK_BLOCKER_SECRET']
 def keycloakCashSecret = env['KEYCLOAK_CASH_SECRET']
 def keycloakExchangeSecret = env['KEYCLOAK_EXCHANGE_SECRET']
 def keycloakNotificationsSecret = env['KEYCLOAK_NOTIFICATIONS_SECRET']
+def keycloakTransferSecret = env['KEYCLOAK_TRANSFER_SECRET']
 
 // Получаем хранилище учётных данных
 def store = Jenkins.instance.getExtensionList(
@@ -146,6 +147,17 @@ if (keycloakNotificationsSecret) {
             "KEYCLOAK_NOTIFICATIONS_SECRET",
             "Secret for accounts microservice",
             Secret.fromString(keycloakNotificationsSecret)
+    )
+    store.addCredentials(Domain.global(), keycloakCred)
+}
+
+if (keycloakTransferSecret) {
+    println "--> Creating credential: KEYCLOAK_TRANSFER_SECRET"
+    def keycloakCred = new StringCredentialsImpl(
+            CredentialsScope.GLOBAL,
+            "KEYCLOAK_TRANSFER_SECRET",
+            "Secret for accounts microservice",
+            Secret.fromString(keycloakTransferSecret)
     )
     store.addCredentials(Domain.global(), keycloakCred)
 }

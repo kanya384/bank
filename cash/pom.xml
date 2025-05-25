@@ -86,20 +86,6 @@
 
     <build>
         <finalName>cash</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
-                <version>4.2.1</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <testFramework>JUNIT5</testFramework>
-                    <packageWithBaseClasses>ru.laurkan.bank.accounts.contracts</packageWithBaseClasses>
-                    <failOnNoContracts>false</failOnNoContracts>
-                    <testMode>EXPLICIT</testMode>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
 </project>

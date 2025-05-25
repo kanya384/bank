@@ -15,6 +15,8 @@ import ru.laurkan.bank.cash.model.TransactionType;
 import ru.laurkan.bank.cash.repository.TransactionRepository;
 import ru.laurkan.bank.cash.repository.dto.TransactionRepositoryDTO;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureStubRunner(
@@ -40,6 +42,7 @@ public class NotificationDispatcherIntegrationTest extends AbstractTestContainer
             transaction.setTransactionType(TransactionType.DEPOSIT);
             transaction.setTransactionStatus(TransactionStatus.COMPLETED);
             transaction.setNotificationSent(false);
+            transaction.setCreatedAt(LocalDateTime.now());
 
             transactionRepository.save(transaction)
                     .block();

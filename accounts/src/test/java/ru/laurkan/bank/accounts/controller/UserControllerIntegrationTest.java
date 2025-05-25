@@ -134,6 +134,26 @@ public class UserControllerIntegrationTest extends AbstractTestContainer {
     }
 
     @Test
+    public void registerUser_shouldNotRegisterYoungUser() {
+        var request = RegisterUserRequestDTO.builder()
+                .login("test-new-not-registered")
+                .name("test")
+                .surname("test")
+                .email("test99@yandex.ru")
+                .birth(LocalDate.of(3090, 6, 20))
+                .password("password")
+                .build();
+
+        webTestClient.post()
+                .uri("/user/register")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(UserResponseDTO.class);
+    }
+
+    @Test
     public void updateUser_shouldUpdateUser() {
         var request = UpdateUserRequestDTO.builder()
                 .name("test-new")

@@ -1,6 +1,5 @@
 package contracts.users
 
-
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
@@ -32,9 +31,7 @@ Contract.make {
                 recipient: anyEmail(),
                 subject: anyNonEmptyString(),
                 message: anyNonEmptyString(),
-                sent: false,
-                createdAt: value(isoDateTime()),
-                modifiedAt: value(isoDateTime())
+                sent: false
         )
     }
 }

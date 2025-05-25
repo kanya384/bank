@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.accounts.exception.RegistrationException;
+import ru.laurkan.bank.clients.exception.BadRequestException;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({WebExchangeBindException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Mono<String> handleParameterNotValidException(final WebExchangeBindException e, Model model) {
         List<FieldError> errors = e.getFieldErrors();
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
         return Mono.just("oops");
     }
 
-    @ExceptionHandler({RegistrationException.class})
+    @ExceptionHandler({RegistrationException.class, BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Mono<String> handleBNotEnoughMoneyException(Exception e, Model model) {
         model.addAttribute("error", Map.of(

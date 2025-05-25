@@ -1,19 +1,44 @@
 services:
+  docker:
+    image: docker:dind
+    container_name: docker
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    volumes:
+      - ./jenkins-docker-certs:/certs/client
+      - ./jenkins-data:/var/jenkins_home
+    networks:
+      - jenkins
+
   jenkins:
-    build: .
+    build:
+      context: .
     container_name: jenkins
+    restart: unless-stopped
     user: root
     env_file:
       - .env
     environment:
+      - DOCKER_HOST=tcp://docker:2376
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_CERT_PATH=/certs/client
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
-      - ./jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ./jenkins-data:/var/jenkins_home
+      - ./jenkins-docker-certs:/certs/client:ro
       - ${KUBECONFIG_PATH}:/root/.kube/config
+      - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
+    networks:
+      - jenkins
 
 volumes:
-  jenkins_home:
+  jenkins-data:
+  jenkins-docker-certs:
+
+networks:
+  jenkins:

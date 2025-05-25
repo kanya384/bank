@@ -1,8 +1,8 @@
 package ru.laurkan.bank.front.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -21,6 +21,6 @@ public class UserResponseDTO {
 
     private String email;
 
-    @JsonFormat(pattern = "dd.MM.yyyy")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate birth;
 }
