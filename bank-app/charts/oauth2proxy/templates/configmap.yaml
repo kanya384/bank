@@ -5,13 +5,8 @@ metadata:
   labels:
     {{- include "oauth2proxy.labels" . | nindent 4 }}
 data:
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ .Values.config.clientId }}_PROVIDER: keycloak
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ .Values.config.clientId }}_CLIENT-ID: {{ .Values.config.clientId }}
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ .Values.config.clientId }}_CLIENT-SECRET: {{ .Values.config.clientSecret }} # move to secret
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ .Values.config.clientId }}_SCOPE: profile
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ .Values.config.clientId }}_authorization-grant-type: client_credentials
     UPSTREAM_URI: {{ tpl .Values.config.upstream_uri . | quote }}
     KEYCLOAK_URI: {{ tpl .Values.config.keycloak_uri . | quote }}
-    CLIENT_ID: {{ .Values.config.clientId }}
+    SPRING_CLIENT_ID: {{ .Values.config.clientId }}
 
 

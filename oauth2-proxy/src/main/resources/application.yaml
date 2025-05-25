@@ -1,7 +1,6 @@
 server:
   port: 8070
 upstream-uri: ${UPSTREAM_URI}
-client-id: ${CLIENT_ID}
 spring:
   application:
     name: oauth2-proxy
@@ -17,50 +16,13 @@ spring:
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_URI}
-#        registration:
-#        registration:
-#          accounts:
-#            provider: keycloak
-#            client-id: accounts
-#            client-secret: ejaCcoPlhth94SVjHB3qzplsj6eMVPO3
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          blocker:
-#            provider: keycloak
-#            client-id: blocker
-#            client-secret: ${blocker_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          cash:
-#            provider: keycloak
-#            client-id: cash
-#            client-secret: ${cash_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          exchange:
-#            provider: keycloak
-#            client-id: exchange
-#            client-secret: ${exchange_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          exchange-generator:
-#            provider: keycloak
-#            client-id: exchange_generator
-#            client-secret: ${exchange_generator_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          notifications:
-#            provider: keycloak
-#            client-id: notifications
-#            client-secret: ${notifications_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          transfer:
-#            provider: keycloak
-#            client-id: transfer
-#            client-secret: ${transfer_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
+        registration:
+          default:
+            provider: keycloak
+            client-id: ${SPRING_CLIENT_ID}
+            client-secret: ${SPRING_CLIENT_SECRET}
+            scope: profile
+            authorization-grant-type: client_credentials
 logging:
   level:
     org:

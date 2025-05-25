@@ -7,72 +7,71 @@ appVersion: "1.0.0"
 
 dependencies:
   - name: keycloak
-    version: "24.3.0" # Using a specific known stable version from Bitnami history
+    version: "24.3.0"
     repository: "https://charts.bitnami.com/bitnami"
 
   - name: accounts
     version: "0.1.0"
-    repository: "file://./charts/accounts" # Local path reference
+    repository: "file://./charts/accounts"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: accounts-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
+    alias: accounts-proxy
+    repository: "file://./charts/oauth2proxy"
 
   - name: postgresql
-    version: "14.2.3" # Using a specific known stable version from Bitnami history
+    version: "14.2.3"
     repository: "https://charts.bitnami.com/bitnami"
-    alias: main-db # Alias to distinguish this instance
+    alias: main-db
     condition: main-db.enabled # Allow disabling if needed
 
   - name: blocker
     version: "0.1.0"
-    repository: "file://./charts/blocker" # Local path reference
+    repository: "file://./charts/blocker"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: blocker-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
+    alias: blocker-proxy
+    repository: "file://./charts/oauth2proxy"
 
 
   - name: exchange
     version: "0.1.0"
-    repository: "file://./charts/exchange" # Local path reference
+    repository: "file://./charts/exchange"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: exchange-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
-
+    alias: exchange-proxy
+    repository: "file://./charts/oauth2proxy"
 
   - name: notifications
     version: "0.1.0"
-    repository: "file://./charts/notifications" # Local path reference
+    repository: "file://./charts/notifications"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: notifications-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
+    alias: notifications-proxy
+    repository: "file://./charts/oauth2proxy"
 
 
   - name: cash
     version: "0.1.0"
-    repository: "file://./charts/cash" # Local path reference
+    repository: "file://./charts/cash"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: cash-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
+    alias: cash-proxy
+    repository: "file://./charts/oauth2proxy"
 
   - name: transfer
     version: "0.1.0"
-    repository: "file://./charts/transfer" # Local path reference
+    repository: "file://./charts/transfer"
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: transfer-proxy # Alias to distinguish this instanc
-    repository: "file://./charts/oauth2proxy" # Local path reference
+    alias: transfer-proxy
+    repository: "file://./charts/oauth2proxy"
 
   - name: front
     version: "0.1.0"
-    repository: "file://./charts/front" # Local path reference
+    repository: "file://./charts/front"

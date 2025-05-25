@@ -19,15 +19,12 @@ public class ProxyServiceImpl implements ProxyService {
     @Value("${upstream-uri}")
     private String upstreamUri;
 
-    @Value("${client-id}")
-    private String clientId;
-
     private final ReactiveOAuth2AuthorizedClientManager manager;
     private final ReactiveClientRegistrationRepository clientRegistrationRepository;
 
     @Override
     public Mono<ResponseEntity<byte[]>> doProxy(ProxyExchange<byte[]> proxy) {
-        return getTokenForClient(clientId)
+        return getTokenForClient()
                 .flatMap(accessToken -> proxy
                         .uri(upstreamUri + proxy.path())
                         .header("Authorization", "Bearer " + accessToken)
@@ -35,9 +32,9 @@ public class ProxyServiceImpl implements ProxyService {
                 );
     }
 
-    private Mono<String> getTokenForClient(String clientId) {
+    private Mono<String> getTokenForClient() {
         OAuth2AuthorizeRequest req = OAuth2AuthorizeRequest
-                .withClientRegistrationId(clientId)
+                .withClientRegistrationId("default")
                 .principal("N/A")
                 .build();
 

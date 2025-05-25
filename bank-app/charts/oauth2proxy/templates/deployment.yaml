@@ -59,12 +59,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "oauth2proxy.fullname" . }}
-#          env:
-#            - name: UPSTREAM_URI
-#              valueFrom:
-#                secretKeyRef:
-#                  name: {{ .Release.Name }}-oauth2proxy-db
-#                  key: client-secret
+          env:
+            - name: SPRING_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "oauth2proxy.fullname" . }}
+                  key: client-secret
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
