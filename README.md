@@ -59,5 +59,6 @@ bank-app/realm-import.json
 После чего приложение будет готово и доступно по адресу:
 
 ```
-http://localhost/register
+http://main.test.local/register #тестовое окружение
+http://main.prod.local/register #prod окружение
 ```
