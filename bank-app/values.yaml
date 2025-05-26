@@ -24,6 +24,7 @@ keycloak:
     path: /
     hostname: bank-app-keycloak
 
+
 accounts:
   replicaCount: 1
   image:

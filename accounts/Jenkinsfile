@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        DB_PASSWORD     = credentials('DB_PASSWORD')
+        GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+        KEYCLOAK_ACCOUNTS_SECRET = credentials('KEYCLOAK_ACCOUNTS_SECRET')
+    }
+
+    stages {
+        stage('Build & Unit Tests') {
+            steps {
+                sh 'mvn clean install -am' //install чтобы сгенерились стабы spring-contract для тестов
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh """
+                docker build -t ${DOCKER_REGISTRY}/accounts:${IMAGE_TAG} accounts
+                """
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'DOCKER_HUB_PASSWORD')]) {
+                    sh """
+                    echo \$DOCKER_HUB_PASSWORD | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin
+                    docker push ${DOCKER_REGISTRY}/accounts:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Helm Deploy to TEST') {
+            steps {
+                sh """
+                                helm upgrade --install bank-app bank-app/charts/accounts/. \\
+                                                     --namespace prod --create-namespace \\
+                                					 --set image.repository=${DOCKER_REGISTRY}/accounts \\
+                                					 --set image.tag=${IMAGE_TAG} \\
+                                					 --set config.database_url=postgresql://{{ .Release.Name }}-main-db:5432/accounts \\
+                                					 --set config.database_username="postgres" \\
+                                					 --set config.keycloak_url=http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+                """
+            }
+        }
+
+        stage('Manual Approval for PROD') {
+            steps {
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+            }
+        }
+
+        stage('Helm Deploy to PROD') {
+            steps {
+                sh """
+                helm upgrade --install bank-app bank-app/charts/accounts/. \\
+                                     --namespace prod --create-namespace \\
+                					 --set image.repository=${DOCKER_REGISTRY}/accounts \\
+                					 --set image.tag=${IMAGE_TAG} \\
+                					 --set config.database_url=postgresql://{{ .Release.Name }}-main-db:5432/accounts \\
+                					 --set config.database_username="postgres" \\
+                					 --set config.keycloak_url=http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+                """
+            }
+        }
+    }
+}

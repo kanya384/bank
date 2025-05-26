@@ -96,7 +96,7 @@ pipeline {
                                      --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
                 					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
                 					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
-                					 --set front.image.repository=${DOCKER_REGISTRY}/front:${IMAGE_TAG} \\
+                					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
                 					 --set front.image.tag=${IMAGE_TAG} \\
                 					 --set front.ingress.hosts[0].host=main.test.local \\
                 					 --set front.ingress.hosts[0].paths[0].path="/" \\
@@ -115,7 +115,7 @@ pipeline {
             steps {
                 sh """
                 helm upgrade --install bank-app bank-app/. \\
-                                     --namespace test --create-namespace \\
+                                     --namespace prod --create-namespace \\
                                      --set main-db.auth.password=${DB_PASSWORD} \\
                 					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
                 					 --set accounts.image.tag=${IMAGE_TAG} \\
@@ -149,7 +149,7 @@ pipeline {
                                      --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
                 					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
                 					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
-                					 --set front.image.repository=${DOCKER_REGISTRY}/front:${IMAGE_TAG} \\
+                					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
                 					 --set front.image.tag=${IMAGE_TAG} \\
                 					 --set front.ingress.hosts[0].host=main.prod.local \\
                 					 --set front.ingress.hosts[0].paths[0].path="/" \\
