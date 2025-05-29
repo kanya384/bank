@@ -1,16 +1,14 @@
 server:
   port: 9070
-clients:
-  exchange:
-    uri: http://localhost:9060
 spring:
   application:
     name: exchange-generator
   cloud:
     consul:
       enabled: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 0 #at most one delivery

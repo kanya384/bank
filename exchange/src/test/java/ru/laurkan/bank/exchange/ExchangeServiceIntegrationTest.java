@@ -8,7 +8,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
-import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequestDTO;
 import ru.laurkan.bank.exchange.model.Currency;
 import ru.laurkan.bank.exchange.model.ExchangeRate;
 import ru.laurkan.bank.exchange.repository.ExchangeRepository;

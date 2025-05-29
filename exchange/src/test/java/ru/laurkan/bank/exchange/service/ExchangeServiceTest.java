@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
-import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequestDTO;
 import ru.laurkan.bank.exchange.mapper.ExchangeMapperImpl;
 import ru.laurkan.bank.exchange.model.Currency;
 import ru.laurkan.bank.exchange.model.ExchangeRate;

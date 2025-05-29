@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
-import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequestDTO;
 import ru.laurkan.bank.exchange.mapper.ExchangeMapper;
 import ru.laurkan.bank.exchange.model.Currency;
 import ru.laurkan.bank.exchange.model.ExchangeRate;
@@ -33,9 +32,8 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public Flux<ExchangeRateResponseDTO> save(List<UpdateExchangeRateRequestDTO> exchangeRates) {
+    public Flux<ExchangeRateResponseDTO> save(List<ExchangeRate> exchangeRates) {
         return Flux.fromIterable(exchangeRates)
-                .map(exchangeMapper::map)
                 .collectList()
                 .flatMap(this::setIdsForExistingRates)
                 .flatMapMany(exchangeRepository::saveAll)

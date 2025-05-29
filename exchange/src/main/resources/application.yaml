@@ -22,3 +22,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_URL}
+      group-id: exchange
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

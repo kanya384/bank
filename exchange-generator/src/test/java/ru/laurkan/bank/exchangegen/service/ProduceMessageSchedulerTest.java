@@ -10,26 +10,24 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.clients.exchange.ExchangeClient;
 import ru.laurkan.bank.clients.exchange.dto.ExchangeRateResponse;
-import ru.laurkan.bank.exchangegen.mapper.ExchangeMapperImpl;
-import ru.laurkan.bank.exchangegen.service.impl.ExchangeServiceImpl;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-@WebFluxTest({ExchangeServiceImpl.class, ExchangeMapperImpl.class})
+@WebFluxTest({ProduceMessageScheduler.class,})
 @ActiveProfiles("test")
-public class ExchangeServiceTest {
+public class ProduceMessageSchedulerTest {
     @MockitoBean
     private ExchangeClient exchangeClient;
     @Autowired
-    private ExchangeService exchangeService;
+    private ProduceMessageScheduler produceMessageScheduler;
 
     @Test
     public void updateRates_shouldUpdateRatesInExchangeService() {
         when(exchangeClient.update(anyList()))
                 .thenReturn(Flux.just(new ExchangeRateResponse()));
 
-        StepVerifier.create(exchangeService.updateRates())
+        StepVerifier.create(produceMessageScheduler.updateRates())
                 .assertNext(Assertions::assertNotNull)
                 .verifyComplete();
     }

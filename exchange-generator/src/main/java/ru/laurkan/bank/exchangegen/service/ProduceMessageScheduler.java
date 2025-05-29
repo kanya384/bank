@@ -1,33 +1,35 @@
-package ru.laurkan.bank.exchangegen.service.impl;
+package ru.laurkan.bank.exchangegen.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.clients.exchange.ExchangeClient;
-import ru.laurkan.bank.clients.exchange.dto.ExchangeRateResponse;
+import ru.laurkan.bank.exchangegen.dto.UpdateExchangeRateRequest;
 import ru.laurkan.bank.exchangegen.mapper.ExchangeMapper;
 import ru.laurkan.bank.exchangegen.model.Currency;
 import ru.laurkan.bank.exchangegen.model.ExchangeRate;
-import ru.laurkan.bank.exchangegen.service.ExchangeService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ExchangeServiceImpl implements ExchangeService {
+public class ProduceMessageScheduler {
+    private final KafkaTemplate<String, UpdateExchangeRateRequest> kafkaTemplate;
     private final ExchangeMapper exchangeMapper;
-    private final ExchangeClient exchangeClient;
 
     @Scheduled(fixedDelay = 1000)
-    @Override
-    public Flux<ExchangeRateResponse> updateRates() {
+    public Mono<Void> updateRates() {
         return generateRates()
                 .flatMapMany(Flux::fromIterable)
-                .map(exchangeMapper::map)
                 .collectList()
-                .flatMapMany(exchangeClient::update);
+                .doOnNext(exchangeRates -> {
+                    var rates = new UpdateExchangeRateRequest();
+                    rates.setRates(exchangeRates);
+                    kafkaTemplate.send("rates", rates);
+                })
+                .then();
     }
 
     private Mono<List<ExchangeRate>> generateRates() {

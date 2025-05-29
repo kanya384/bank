@@ -22,6 +22,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: exchange
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG
