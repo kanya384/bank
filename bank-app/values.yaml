@@ -24,6 +24,14 @@ keycloak:
     path: /
     hostname: bank-app-keycloak
 
+kafka:
+  image:
+    repository: bitnami/kafka
+  controller:
+    replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 9092
 
 accounts:
   replicaCount: 1
