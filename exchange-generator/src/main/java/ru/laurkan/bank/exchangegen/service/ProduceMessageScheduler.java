@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.exchangegen.dto.UpdateExchangeRateRequest;
-import ru.laurkan.bank.exchangegen.mapper.ExchangeMapper;
 import ru.laurkan.bank.exchangegen.model.Currency;
 import ru.laurkan.bank.exchangegen.model.ExchangeRate;
 
@@ -17,7 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProduceMessageScheduler {
     private final KafkaTemplate<String, UpdateExchangeRateRequest> kafkaTemplate;
-    private final ExchangeMapper exchangeMapper;
+    private final String key = "new-rates";
+    private final String topic = "rates";
 
     @Scheduled(fixedDelay = 1000)
     public Mono<Void> updateRates() {
@@ -27,7 +27,7 @@ public class ProduceMessageScheduler {
                 .doOnNext(exchangeRates -> {
                     var rates = new UpdateExchangeRateRequest();
                     rates.setRates(exchangeRates);
-                    kafkaTemplate.send("rates", rates);
+                    kafkaTemplate.send(topic, key, rates);
                 })
                 .then();
     }
