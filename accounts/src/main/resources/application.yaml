@@ -17,6 +17,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
-  cloud:
-    consul:
-      enabled: false
+  kafka:
+    admin:
+      client-id: accounts
+      fail-fast: true
+    producer:
+      bootstrap-servers: ${KAFKA_URL}
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1

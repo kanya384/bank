@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Exception.class, SendEventException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e, Model model) {
         return ErrorResponse.builder()

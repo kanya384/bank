@@ -9,7 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.cash.AbstractTestContainer;
-import ru.laurkan.bank.cash.model.Transaction;
 import ru.laurkan.bank.cash.model.TransactionStatus;
 import ru.laurkan.bank.cash.model.TransactionType;
 import ru.laurkan.bank.cash.repository.TransactionRepository;
@@ -57,7 +56,7 @@ public class NotificationDispatcherIntegrationTest extends AbstractTestContainer
                 .assertNext(validatedList -> assertThat(validatedList)
                         .hasSize(1)
                         .first()
-                        .extracting(Transaction::getNotificationSent)
+                        .extracting(TransactionRepositoryDTO::getNotificationSent)
                         .isEqualTo(true))
                 .verifyComplete();
     }

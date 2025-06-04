@@ -1,5 +1,5 @@
 server:
-  port: 9050
+  port: 9090
 clients:
   accounts:
     uri: http://localhost:9000
@@ -13,25 +13,27 @@ spring:
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/test
+    url: r2dbc:postgresql://localhost:5432/transfers
     username: test
     password: test
   jpa:
     show-sql: true
   liquibase:
-    url: jdbc:postgresql://localhost:5432/test
+    url: jdbc:postgresql://localhost:5432/transfers
     user: test
     password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
-  cloud:
-    consul:
-      enabled: false
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+  kafka:
+    admin:
+      client-id: transfer
+      fail-fast: true
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1

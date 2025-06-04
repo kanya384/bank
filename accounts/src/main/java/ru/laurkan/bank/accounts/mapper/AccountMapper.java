@@ -6,6 +6,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import ru.laurkan.bank.accounts.dto.account.AccountResponseDTO;
 import ru.laurkan.bank.accounts.model.Account;
+import ru.laurkan.bank.events.accounts.AccountInfo;
 
 @Mapper(
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -14,4 +15,6 @@ import ru.laurkan.bank.accounts.model.Account;
 )
 public abstract class AccountMapper {
     public abstract AccountResponseDTO map(Account account);
+
+    public abstract AccountInfo event(Account account);
 }

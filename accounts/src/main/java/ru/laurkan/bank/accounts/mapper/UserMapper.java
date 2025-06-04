@@ -8,6 +8,7 @@ import ru.laurkan.bank.accounts.dto.user.UpdateUserRequestDTO;
 import ru.laurkan.bank.accounts.dto.user.UserResponseDTO;
 import ru.laurkan.bank.accounts.dto.user.UsersAccountsResponseDTO;
 import ru.laurkan.bank.accounts.model.User;
+import ru.laurkan.bank.events.users.UserInfo;
 
 @Mapper(
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -30,6 +31,8 @@ public abstract class UserMapper {
     }
 
     public abstract UserResponseDTO map(User user);
+
+    public abstract UserInfo event(User user);
 
     public abstract UsersAccountsResponseDTO mapUserAccounts(User user);
 

@@ -11,8 +11,8 @@ spring:
     name: accounts
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/notifications
-    username: login
-    password: password
+    username: test
+    password: test
   jpa:
     show-sql: true
   cloud:
@@ -20,15 +20,19 @@ spring:
       enabled: false
   liquibase:
     url: jdbc:postgresql://localhost:5432/notifications
-    user: login
-    password: password
+    user: test
+    password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      properties:
+        spring.json.trusted.packages: "ru.laurkan.bank.events.*"
+      group-id: notifications-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

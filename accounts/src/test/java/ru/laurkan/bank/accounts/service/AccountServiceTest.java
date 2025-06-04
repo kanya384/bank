@@ -1,11 +1,16 @@
 package ru.laurkan.bank.accounts.service;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Flux;
@@ -21,6 +26,10 @@ import ru.laurkan.bank.accounts.model.Account;
 import ru.laurkan.bank.accounts.model.Currency;
 import ru.laurkan.bank.accounts.repository.AccountRepository;
 import ru.laurkan.bank.accounts.service.impl.AccountServiceImpl;
+import ru.laurkan.bank.events.accounts.AccountEvent;
+import ru.laurkan.bank.events.accounts.AccountInfo;
+
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
@@ -34,6 +43,12 @@ public class AccountServiceTest {
 
     @Autowired
     private AccountService accountService;
+
+    @MockitoBean
+    private KafkaTemplate<Long, AccountEvent> notifications;
+
+    @MockitoBean
+    private KafkaTemplate<Long, AccountInfo> domainEvents;
 
     @BeforeEach
     public void setUp() {
@@ -53,6 +68,13 @@ public class AccountServiceTest {
                         .currency(Currency.RUB)
                         .amount(0.0)
                         .build()));
+
+        when(domainEvents.send(any(String.class), any(Long.class), any(AccountInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new AccountInfo(1L, 1L, Currency.USD.toString(), 10.0)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
 
         accountService.create(createRequest)
                 .doOnNext(accountResponseDTO -> Assertions.assertThat(accountResponseDTO)
@@ -184,6 +206,12 @@ public class AccountServiceTest {
                         .amount(20.0)
                         .build()));
 
+        when(domainEvents.send(any(String.class), any(Long.class), any(AccountInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new AccountInfo(1L, 1L, Currency.USD.toString(), 10.0)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
         StepVerifier.create(accountService.putMoneyToAccount(1L, 10.0))
                 .assertNext(accountResponseDTO -> Assertions.assertThat(accountResponseDTO)
                         .withFailMessage("Аккаунт не должен быть пустым")
@@ -220,6 +248,12 @@ public class AccountServiceTest {
                         .userId(1L)
                         .amount(0.0)
                         .build()));
+
+        when(domainEvents.send(any(String.class), any(Long.class), any(AccountInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new AccountInfo(1L, 1L, Currency.USD.toString(), 10.0)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
 
         StepVerifier.create(accountService.takeMoneyFromAccount(1L, 10.0))
                 .assertNext(accountResponseDTO -> Assertions.assertThat(accountResponseDTO)
@@ -301,6 +335,12 @@ public class AccountServiceTest {
         when(accountRepository.findById(2L))
                 .thenReturn(Mono.empty());
 
+        when(domainEvents.send(any(String.class), any(Long.class), any(AccountInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new AccountInfo(1L, 1L, Currency.USD.toString(), 10.0)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
         StepVerifier.create(accountService.transferMoney(request))
                 .expectErrorMatches(exception -> exception instanceof AccountNotFoundException)
                 .verify();
@@ -341,6 +381,12 @@ public class AccountServiceTest {
                         .userId(1L)
                         .amount(40.0)
                         .build()));
+
+        when(domainEvents.send(any(String.class), any(Long.class), any(AccountInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new AccountInfo(1L, 1L, Currency.USD.toString(), 10.0)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
 
         StepVerifier.create(accountService.transferMoney(request))
                 .assertNext(transferMoneyResponseDTO -> Assertions.assertThat(transferMoneyResponseDTO)
