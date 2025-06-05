@@ -3,14 +3,15 @@ kind: ConfigMap
 metadata:
   name: {{ include "streams.fullname" . }}
   labels:
-    {{ - include "streams.labels" . | nindent 4 }}
+    {{- include "streams.labels" . | nindent 4 }}
 data:
   # Example: Generic key-value pairs from .Values.config
     # Note: We process database_url separately below using tpl
-    {{ - range $key, $value := .Values.config }}
-    {{ - if ne $key "database_url" }}
+    {{- range $key, $value := .Values.config }}
+    {{- if ne $key "database_url" }}
     {{ $key }}: {{ $value | quote }}
-    {{ - end }}
-    {{ - end }}
+    {{- end }}
+    {{- end }}
 
-    KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+    KAFKA_PRODUCER_URL: {{ tpl .Values.config.kafka_producer_url . | quote }}
+    KAFKA_CONSUMER_URL: {{ tpl .Values.config.kafka_consumer_url . | quote }}

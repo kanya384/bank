@@ -8,7 +8,7 @@ spring:
     name: exchange-generator
   kafka:
     producer:
-      bootstrap-servers: ${KAFKA_URL}
+      bootstrap-servers: ${KAFKA_PRODUCER_URL}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: 0 #at most one delivery

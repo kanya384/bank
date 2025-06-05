@@ -17,4 +17,4 @@ data:
   SPRING_DATASOURCE_USERNAME: {{ .Values.config.database_username | quote }}
   KEYCLOAK_URL: {{ tpl .Values.config.keycloak_url . | quote }}
   GATEWAY_URL: {{ tpl .Values.config.gateway_url . | quote }}
-  KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+  KAFKA_PRODUCER_URL: {{ tpl .Values.config.kafka_producer_url . | quote }}

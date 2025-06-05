@@ -62,4 +62,5 @@ tolerations: [ ]
 affinity: { }
 
 config:
-  kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
+  kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092"
+  kafka_consumer_url: "http://{{ .Release.Name }}-kafka:9092"

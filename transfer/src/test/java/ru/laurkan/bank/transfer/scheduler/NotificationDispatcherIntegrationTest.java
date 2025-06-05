@@ -1,25 +1,35 @@
 package ru.laurkan.bank.transfer.scheduler;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.test.StepVerifier;
+import ru.laurkan.bank.events.common.TransactionEventStatus;
+import ru.laurkan.bank.events.transfer.TransferEvent;
+import ru.laurkan.bank.events.transfer.TransferEventType;
 import ru.laurkan.bank.transfer.AbstractTestContainer;
 import ru.laurkan.bank.transfer.model.TransactionStatus;
 import ru.laurkan.bank.transfer.model.TransactionType;
 import ru.laurkan.bank.transfer.repository.TransactionRepository;
 import ru.laurkan.bank.transfer.repository.dto.TransactionRepositoryDTO;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-@AutoConfigureStubRunner(
-        ids = {"ru.laurkan:accounts:+:stubs:9000", "ru.laurkan:notifications:+:stubs:9020"},
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL
-)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static ru.laurkan.bank.transfer.configuration.KafkaConfiguration.OUTPUT_TRANSFER_NOTIFICATION_EVENTS_TOPIC;
+
+
 @DirtiesContext
 @ActiveProfiles("test")
 public class NotificationDispatcherIntegrationTest extends AbstractTestContainer {
@@ -28,6 +38,9 @@ public class NotificationDispatcherIntegrationTest extends AbstractTestContainer
 
     @Autowired
     private NotificationDispatcher notificationDispatcher;
+
+    @MockitoBean
+    KafkaTemplate<Long, TransferEvent> notificationsTemplate;
 
     @BeforeEach
     public void setUp() {
@@ -47,7 +60,15 @@ public class NotificationDispatcherIntegrationTest extends AbstractTestContainer
     }
 
     @Test
-    public void sendNotifications_shouldSendNotifications() {
+    public void sendNotifications_shouldSendNotifications() throws ExecutionException, InterruptedException {
+        when(notificationsTemplate.send(any(String.class), any(Long.class), any(TransferEvent.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>(OUTPUT_TRANSFER_NOTIFICATION_EVENTS_TOPIC, 0,
+                        1L,
+                        new TransferEvent(TransferEventType.SELF_TRANSFER, 1L, 100.0,
+                                2L, TransactionEventStatus.COMPLETED)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                        0L, 0, 0L, 0, 0))));
+
         StepVerifier.create(notificationDispatcher.sendNotifications()
                         .collectList()
                 )

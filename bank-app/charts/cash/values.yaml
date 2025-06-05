@@ -62,7 +62,7 @@ tolerations: [ ]
 affinity: { }
 
 config:
-  kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
+  kafka_producer_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:9092"
   database_url: "postgresql://postgres-postgresql.{{ .Release.Namespace }}.svc.cluster.local:5432/cash"
   database_username: "cash"
   keycloak_url: "http://{{ .Release.Namespace }}-keycloak.svc.cluster.local:80"

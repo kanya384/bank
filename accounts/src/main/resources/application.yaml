@@ -18,7 +18,7 @@ spring:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
   kafka:
-    bootstrap-servers: ${KAFKA_URL}
+    bootstrap-servers: ${KAFKA_PRODUCER_URL}
     admin:
       client-id: accounts
       fail-fast: true

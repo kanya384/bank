@@ -2,12 +2,13 @@ server:
   port: 1000
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_URL}
     streams:
+      bootstrap-servers: ${KAFKA_CONSUMER_URL}
       application-id: streams
       properties:
         default.key.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
         default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
     producer:
+      bootstrap-servers: ${KAFKA_PRODUCER_URL}
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

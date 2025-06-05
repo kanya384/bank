@@ -29,12 +29,11 @@ spring:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
   kafka:
-    bootstrap-servers: ${KAFKA_URL}
+    bootstrap-servers: ${KAFKA_PRODUCER_URL}
     admin:
       client-id: transfer
       fail-fast: true
     producer:
-      bootstrap-servers: ${KAFKA_URL}
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: 1

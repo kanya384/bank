@@ -26,6 +26,9 @@ dependencies:
 - name: exchange
   repository: file://./charts/exchange
   version: 0.1.0
+- name: exchangegenerator
+  repository: file://./charts/exchangegenerator
+  version: 0.1.0
 - name: oauth2proxy
   repository: file://./charts/oauth2proxy
   version: 0.1.0
@@ -50,5 +53,5 @@ dependencies:
 - name: front
   repository: file://./charts/front
   version: 0.1.0
-digest: sha256:def7506a9df6d71b4c329d836ff3ff7fcca73b2a624e2cdad9700987cb494cdd
-generated: "2025-06-05T20:03:50.505604+03:00"
+digest: sha256:57100fee786cdda0197814bbf34bc98acc3b639a3f9ac69fc417c30757cb093c
+generated: "2025-06-05T22:35:54.168326+03:00"

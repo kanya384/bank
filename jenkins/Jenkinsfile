@@ -68,6 +68,8 @@ pipeline {
                                      --set main-db.auth.password=${DB_PASSWORD} \\
                 					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
                 					 --set accounts.image.tag=${IMAGE_TAG} \\
+                					 --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
+                                     --set streams.image.tag=${IMAGE_TAG} \\
                 					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
                 					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
                 					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
@@ -96,8 +98,8 @@ pipeline {
                                      --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
                                      --set transfer-proxy.image.tag=${IMAGE_TAG} \\
                                      --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
-                					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
-                					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                					 --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                					 --set exchangegenerator.image.tag=${IMAGE_TAG} \\
                 					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
                 					 --set front.image.tag=${IMAGE_TAG} \\
                 					 --set front.ingress.hosts[0].host=main.test.local \\
@@ -121,6 +123,8 @@ pipeline {
                                      --set main-db.auth.password=${DB_PASSWORD} \\
                 					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
                 					 --set accounts.image.tag=${IMAGE_TAG} \\
+                					 --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
+                                     --set streams.image.tag=${IMAGE_TAG} \\
                 					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
                 					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
                 					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
@@ -149,8 +153,8 @@ pipeline {
                                      --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
                                      --set transfer-proxy.image.tag=${IMAGE_TAG} \\
                                      --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
-                					 --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
-                					 --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                					 --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                					 --set exchangegenerator.image.tag=${IMAGE_TAG} \\
                 					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
                 					 --set front.image.tag=${IMAGE_TAG} \\
                 					 --set front.ingress.hosts[0].host=main.prod.local \\

@@ -47,6 +47,10 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/exchange"
 
+  - name: exchangegenerator
+    version: "0.1.0"
+    repository: "file://./charts/exchangegenerator"
+
   - name: oauth2proxy
     version: "0.1.0"
     alias: exchange-proxy
