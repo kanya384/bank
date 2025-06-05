@@ -30,9 +30,13 @@ spring:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       properties:
         spring.json.trusted.packages: "ru.laurkan.bank.events.*"
       group-id: notifications-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest

@@ -6,7 +6,9 @@ import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import ru.laurkan.bank.events.accounts.AccountDetailedEvent;
+import ru.laurkan.bank.notifications.dto.EmailNotificationResponseDTO;
 import ru.laurkan.bank.notifications.service.EmailNotificationService;
 
 import static ru.laurkan.bank.notifications.configuration.KafkaConfiguration.ACCOUNT_INPUT_EVENTS_TOPIC;
@@ -23,8 +25,7 @@ public class AccountsConsumer {
             dltStrategy = DltStrategy.FAIL_ON_ERROR
     )
     @KafkaListener(topics = ACCOUNT_INPUT_EVENTS_TOPIC)
-    public void processAccountEvent(AccountDetailedEvent accountDetailedEvent) {
-        System.out.println("Account event type: " + accountDetailedEvent.accountEvent().eventType());
-        System.out.println("Account event type email = " + accountDetailedEvent.userInfo().email());
+    public Mono<EmailNotificationResponseDTO> processAccountEvent(AccountDetailedEvent accountDetailedEvent) {
+        return emailNotificationService.create(accountDetailedEvent);
     }
 }

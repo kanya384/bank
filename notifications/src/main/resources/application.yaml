@@ -28,3 +28,11 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      properties:
+        spring.json.trusted.packages: "ru.laurkan.bank.events.*"
+      group-id: notifications-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
