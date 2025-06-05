@@ -62,5 +62,6 @@ tolerations: [ ]
 affinity: { }
 
 config:
+  kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
   gateway_url: "http://ingress-nginx-controller.svc.cluster.local:80"
   keycloak_url: "http://{{ .Release.Namespace }}-keycloak.svc.cluster.local:80"

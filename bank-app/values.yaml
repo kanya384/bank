@@ -43,9 +43,22 @@ accounts:
     type: ClusterIP
     port: 9000
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/accounts"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+
+streams:
+  replicaCount: 1
+  image:
+    repository: laurkan/streams # Removed registry prefix
+    tag: "latest"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+  service:
+    type: ClusterIP
+    port: 1000
+  config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
 
 
 main-db:
@@ -147,6 +160,7 @@ exchange:
     type: ClusterIP
     port: 9060
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/exchange"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
@@ -190,6 +204,7 @@ exchangegenerator:
     type: ClusterIP
     port: 9070
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     keycloak_url: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs"
 
@@ -203,6 +218,7 @@ notifications:
     type: ClusterIP
     port: 9020
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/notifications"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
@@ -249,6 +265,7 @@ cash:
     type: ClusterIP
     port: 9050
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/cash"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
@@ -294,6 +311,7 @@ transfer:
     type: ClusterIP
     port: 9090
   config:
+    kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:80"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/transfer"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs

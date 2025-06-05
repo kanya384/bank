@@ -18,6 +18,10 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/accounts"
 
+  - name: streams
+    version: "0.1.0"
+    repository: "file://./charts/streams"
+
   - name: oauth2proxy
     version: "0.1.0"
     alias: accounts-proxy

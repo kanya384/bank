@@ -2,7 +2,7 @@ server:
   port: 1000
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_URL}
+    bootstrap-servers: localhost:9092
     streams:
       application-id: streams
       properties:

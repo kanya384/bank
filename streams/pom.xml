@@ -39,4 +39,8 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>streams</finalName>
+    </build>
+
 </project>
