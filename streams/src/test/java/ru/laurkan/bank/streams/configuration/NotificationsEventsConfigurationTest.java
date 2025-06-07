@@ -12,6 +12,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.ActiveProfiles;
 import ru.laurkan.bank.events.accounts.AccountDetailedEvent;
 import ru.laurkan.bank.events.accounts.AccountEvent;
 import ru.laurkan.bank.events.accounts.AccountEventType;
@@ -51,6 +52,7 @@ import static ru.laurkan.bank.streams.configuration.NotificationsEventsConfigura
                 TRANSFER_OUTPUT_DETAILED_EVENTS_TOPIC
         }
 )
+@ActiveProfiles("test")
 public class NotificationsEventsConfigurationTest {
     @Autowired
     private KafkaTemplate<Long, Object> kafkaTemplate;

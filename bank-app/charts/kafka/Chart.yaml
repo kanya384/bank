@@ -1,0 +1,9 @@
+apiVersion: v2
+name: kafka
+description: Helm chart for the Kafka microservice
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.0.0"

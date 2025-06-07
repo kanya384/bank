@@ -24,22 +24,6 @@ keycloak:
     path: /
     hostname: bank-app-keycloak
 
-kafka:
-  controller:
-    replicaCount: 1
-  listeners:
-    client:
-      protocol: PLAINTEXT
-    controller:
-      protocol: PLAINTEXT
-    interbroker:
-        protocol: PLAINTEXT
-    external:
-      protocol: PLAINTEXT
-  extraConfig: |
-    offsets.topic.replication.factor=1
-    transaction.state.log.replication.factor=1
-
 accounts:
   replicaCount: 1
   image:
@@ -50,7 +34,7 @@ accounts:
     type: ClusterIP
     port: 9000
   config:
-    kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092"
+    kafka_producer_url: "http://{{ .Release.Name }}-kafka:9092"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/accounts"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
@@ -65,7 +49,7 @@ streams:
     type: ClusterIP
     port: 1000
   config:
-    kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092"
+    kafka_producer_url: "http://{{ .Release.Name }}-kafka:9092"
     kafka_consumer_url: "http://{{ .Release.Name }}-kafka:9092"
 
 main-db:
@@ -211,7 +195,7 @@ exchangegenerator:
     type: ClusterIP
     port: 9070
   config:
-    kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092"
+    kafka_producer_url: "http://{{ .Release.Name }}-kafka:9092"
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     keycloak_url: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs"
 
@@ -272,7 +256,7 @@ cash:
     type: ClusterIP
     port: 9050
   config:
-    kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092"
+    kafka_producer_url: "http://{{ .Release.Name }}-kafka:9092"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/cash"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
@@ -318,7 +302,7 @@ transfer:
     type: ClusterIP
     port: 9090
   config:
-    kafka_producer_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092"
+    kafka_producer_url: "http://{{ .Release.Name }}-kafka:9092"
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/transfer"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs

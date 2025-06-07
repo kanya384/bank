@@ -3,8 +3,8 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 24.3.0
 - name: kafka
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 32.2.9
+  repository: file://./charts/kafka
+  version: 0.1.0
 - name: accounts
   repository: file://./charts/accounts
   version: 0.1.0
@@ -53,5 +53,5 @@ dependencies:
 - name: front
   repository: file://./charts/front
   version: 0.1.0
-digest: sha256:57100fee786cdda0197814bbf34bc98acc3b639a3f9ac69fc417c30757cb093c
-generated: "2025-06-05T22:35:54.168326+03:00"
+digest: sha256:60d164a55c0f9187b723b1c184ff1708fb37c98ee30960012a31b7a7c9594a3e
+generated: "2025-06-07T09:49:11.825831+03:00"
