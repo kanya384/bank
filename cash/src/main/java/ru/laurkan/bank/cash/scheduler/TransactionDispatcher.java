@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.cash.mapper.TransactionMapper;
@@ -30,7 +28,6 @@ public class TransactionDispatcher {
     private final KafkaTemplate<Long, CashEvent> notifications;
 
     @Scheduled(fixedDelay = 3000)
-    @Transactional
     public Flux<Transaction> processApprovedTransactions() {
         return transactionRepository
                 .findByTransactionStatus(TransactionStatus.APPROVED)
@@ -39,7 +36,6 @@ public class TransactionDispatcher {
                 .map(transactionMapper::map);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private Mono<TransactionRepositoryDTO> processTransaction(Transaction transaction) {
         return Mono.just(switch (transaction) {
                     case DepositTransaction depositTransaction -> accountsClient.putMoneyToAccount(transaction.getAccountId(),

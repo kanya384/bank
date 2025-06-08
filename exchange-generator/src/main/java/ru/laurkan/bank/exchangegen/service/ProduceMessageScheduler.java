@@ -6,16 +6,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.laurkan.bank.exchangegen.dto.UpdateExchangeRateRequest;
+import ru.laurkan.bank.events.exchange.ExchangeRateEventItem;
+import ru.laurkan.bank.events.exchange.UpdateExchangeRateEvent;
 import ru.laurkan.bank.exchangegen.model.Currency;
 import ru.laurkan.bank.exchangegen.model.ExchangeRate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProduceMessageScheduler {
-    private final KafkaTemplate<String, UpdateExchangeRateRequest> kafkaTemplate;
+    private final KafkaTemplate<String, UpdateExchangeRateEvent> kafkaTemplate;
     private final String key = "new-rates";
     private final String topic = "rates";
 
@@ -25,8 +27,11 @@ public class ProduceMessageScheduler {
                 .flatMapMany(Flux::fromIterable)
                 .collectList()
                 .doOnNext(exchangeRates -> {
-                    var rates = new UpdateExchangeRateRequest();
-                    rates.setRates(exchangeRates);
+                    var rates = new UpdateExchangeRateEvent();
+                    List<ExchangeRateEventItem> items = new ArrayList<>();
+                    exchangeRates.forEach(rate -> items
+                            .add(new ExchangeRateEventItem(rate.getCurrency().toString(), rate.getRate())));
+                    rates.setRates(items);
                     kafkaTemplate.send(topic, key, rates);
                 })
                 .then();

@@ -11,8 +11,8 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
 
   - name: kafka
-    version: "0.1.0"
-    repository: "file://./charts/kafka"
+    version: "32.2.9"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
 
   - name: accounts
     version: "0.1.0"

@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.clients.exchange.ExchangeClient;
 import ru.laurkan.bank.clients.exchange.dto.ExchangeRateResponse;
-import ru.laurkan.bank.exchangegen.dto.UpdateExchangeRateRequest;
+import ru.laurkan.bank.events.exchange.UpdateExchangeRateEvent;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,7 +33,7 @@ public class ProduceMessageSchedulerTest {
     private ProduceMessageScheduler produceMessageScheduler;
 
     @MockitoBean
-    private KafkaTemplate<String, UpdateExchangeRateRequest> kafkaTemplate;
+    private KafkaTemplate<String, UpdateExchangeRateEvent> kafkaTemplate;
 
     @BeforeEach
     public void setUp() {
@@ -46,10 +46,10 @@ public class ProduceMessageSchedulerTest {
         when(exchangeClient.update(anyList()))
                 .thenReturn(Flux.just(new ExchangeRateResponse()));
 
-        when(kafkaTemplate.send(any(String.class), any(String.class), any(UpdateExchangeRateRequest.class)))
+        when(kafkaTemplate.send(any(String.class), any(String.class), any(UpdateExchangeRateEvent.class)))
                 .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 0,
                         "test",
-                        new UpdateExchangeRateRequest()), new RecordMetadata(new TopicPartition("test", 0),
+                        new UpdateExchangeRateEvent()), new RecordMetadata(new TopicPartition("test", 0),
                         0L, 0, 0L, 0, 0))));
 
         StepVerifier.create(produceMessageScheduler.updateRates())

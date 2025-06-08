@@ -5,16 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.context.ActiveProfiles;
 import ru.laurkan.bank.exchangegen.service.ProduceMessageScheduler;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureStubRunner(
-        ids = "ru.laurkan:exchange:+:stubs:9060",
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL
-)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
 public class ProduceMessageSchedulerIntegrationTest {

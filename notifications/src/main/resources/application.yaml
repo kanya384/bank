@@ -29,7 +29,7 @@ spring:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
   kafka:
-    bootstrap-servers: ${KAFKA_CONSUMER_URL}
+    bootstrap-servers: ${KAFKA_URL}
     consumer:
       properties:
         spring.json.trusted.packages: "ru.laurkan.bank.events.*"

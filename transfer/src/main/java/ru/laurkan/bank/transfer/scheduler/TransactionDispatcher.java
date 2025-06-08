@@ -3,8 +3,6 @@ package ru.laurkan.bank.transfer.scheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.laurkan.bank.clients.accounts.AccountsClient;
@@ -31,7 +29,6 @@ public class TransactionDispatcher {
     private final ExchangeClient exchangeClient;
 
     @Scheduled(fixedDelay = 3000)
-    @Transactional
     public Flux<Transaction> processApprovedTransactions() {
         return transactionRepository
                 .findByTransactionStatus(TransactionStatus.APPROVED)
@@ -40,7 +37,6 @@ public class TransactionDispatcher {
                 .map(transactionMapper::map);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private Mono<TransactionRepositoryDTO> processTransaction(Transaction transaction) {
         return Mono.just(exchangeClient.readAll()
                         .collectMap(ExchangeRateResponse::getCurrency, ExchangeRateResponse::getRate)

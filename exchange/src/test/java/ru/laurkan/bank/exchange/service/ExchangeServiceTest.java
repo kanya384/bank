@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
-import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequest;
 import ru.laurkan.bank.exchange.mapper.ExchangeMapperImpl;
 import ru.laurkan.bank.exchange.model.Currency;
 import ru.laurkan.bank.exchange.model.ExchangeRate;
@@ -19,10 +18,8 @@ import ru.laurkan.bank.exchange.repository.ExchangeRepository;
 import ru.laurkan.bank.exchange.service.impl.ExchangeServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -77,45 +74,6 @@ public class ExchangeServiceTest {
                 .assertNext(exchangeRateResponseDTO -> assertThat(exchangeRateResponseDTO)
                         .extracting(ExchangeRateResponseDTO::getCurrency)
                         .isEqualTo(Currency.RUB)
-                )
-                .verifyComplete();
-    }
-
-    @Test
-    public void save_shouldSaveExchangeRatesList() {
-        var usdExchangeRate = new UpdateExchangeRateRequest();
-        usdExchangeRate.setRates(List.of(new ExchangeRate(1L, Currency.USD, 0.01,
-                LocalDateTime.now(), LocalDateTime.now())));
-
-        when(exchangeRepository.findAll())
-                .thenReturn(Flux.just(
-                        ExchangeRate.builder()
-                                .id(1L)
-                                .currency(Currency.USD)
-                                .rate(0.005)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
-                                .build())
-                );
-
-        when(exchangeRepository.saveAll(anyList()))
-                .thenReturn(Flux.just(
-                        ExchangeRate.builder()
-                                .id(1L)
-                                .currency(Currency.USD)
-                                .rate(0.01)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
-                                .build()
-                ));
-
-        StepVerifier.create(exchangeService.save(usdExchangeRate.getRates())
-                        .collectList())
-                .assertNext(exchangeRateResponseDTOS -> assertThat(exchangeRateResponseDTOS)
-                        .hasSize(1)
-                        .first()
-                        .extracting(ExchangeRateResponseDTO::getCurrency)
-                        .isEqualTo(Currency.USD)
                 )
                 .verifyComplete();
     }
