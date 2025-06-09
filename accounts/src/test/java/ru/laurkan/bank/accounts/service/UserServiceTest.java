@@ -1,11 +1,16 @@
 package ru.laurkan.bank.accounts.service;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -20,8 +25,13 @@ import ru.laurkan.bank.accounts.mapper.UserMapperImpl;
 import ru.laurkan.bank.accounts.model.User;
 import ru.laurkan.bank.accounts.repository.UserRepository;
 import ru.laurkan.bank.accounts.service.impl.UserServiceImpl;
+import ru.laurkan.bank.events.users.UserEvent;
+import ru.laurkan.bank.events.users.UserEventType;
+import ru.laurkan.bank.events.users.UserInfo;
 
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +50,12 @@ public class UserServiceTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    private KafkaTemplate<Long, UserEvent> notifications;
+
+    @MockitoBean
+    private KafkaTemplate<Long, UserInfo> domainEvents;
 
     @BeforeEach
     public void setUp() {
@@ -132,6 +148,13 @@ public class UserServiceTest {
                         .id(1L)
                         .build()));
 
+        when(domainEvents.send(any(String.class), any(Long.class), any(UserInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new UserInfo(1L, "login", "surname", "name",
+                                "test01@mail.ru", LocalDate.of(1990, 6, 20))),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
         StepVerifier.create(userService.registerUser(request))
                 .assertNext(userResponseDTO -> Assertions.assertThat(userResponseDTO)
                         .withFailMessage("Не нулевой ответ")
@@ -167,6 +190,13 @@ public class UserServiceTest {
                         .name("new-name")
                         .build()));
 
+        when(domainEvents.send(any(String.class), any(Long.class), any(UserInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new UserInfo(1L, "login", "surname", "name",
+                                "test01@mail.ru", LocalDate.of(1990, 6, 20))),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
         StepVerifier.create(userService.update(1L, request))
                 .assertNext(userResponseDTO -> Assertions.assertThat(userResponseDTO)
                         .withFailMessage("Не пустой ответ")
@@ -179,7 +209,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void update_shouldReturnExceptionIfUserNotFound() {
+    public void update_shouldReturnExceptionIfUserNotFound() throws ExecutionException, InterruptedException {
         var request = UpdateUserRequestDTO.builder()
                 .name("new-name")
                 .surname("surname")
@@ -189,6 +219,14 @@ public class UserServiceTest {
 
         when(userRepository.findById(1L))
                 .thenReturn(Mono.empty());
+
+        when(domainEvents.send(any(String.class), any(Long.class), any(UserInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new UserInfo(1L, "login", "surname", "name",
+                                "test01@mail.ru", LocalDate.of(1990, 6, 20))),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
 
         StepVerifier.create(userService.update(1L, request))
                 .expectErrorMatches(exception -> exception instanceof UserNotFoundException
@@ -217,6 +255,19 @@ public class UserServiceTest {
                         .id(1L)
                         .password(encryptedPass)
                         .build()));
+
+        when(domainEvents.send(any(String.class), any(Long.class), any(UserInfo.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new UserInfo(1L, "login", "surname", "name",
+                                "test01@mail.ru", LocalDate.of(1990, 6, 20))),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
+
+        when(notifications.send(any(String.class), any(Long.class), any(UserEvent.class)))
+                .thenReturn(CompletableFuture.completedFuture(new SendResult<>(new ProducerRecord<>("test", 1L,
+                        new UserEvent(UserEventType.PASSWORD_CHANGED, 1L)),
+                        new RecordMetadata(new TopicPartition("test", 0),
+                                0L, 0, 0L, 0, 0))));
 
         StepVerifier.create(userService.changePassword(1L, request))
                 .assertNext(userResponseDTO -> assertTrue(passwordEncoder

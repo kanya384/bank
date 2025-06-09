@@ -5,8 +5,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+import ru.laurkan.bank.events.exchange.ExchangeRateEventItem;
 import ru.laurkan.bank.exchange.dto.ExchangeRateResponseDTO;
-import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequestDTO;
+import ru.laurkan.bank.exchange.dto.UpdateExchangeRateRequest;
 import ru.laurkan.bank.exchange.model.ExchangeRate;
 
 @Mapper(
@@ -17,5 +18,6 @@ import ru.laurkan.bank.exchange.model.ExchangeRate;
 public interface ExchangeMapper {
     ExchangeRateResponseDTO map(ExchangeRate exchangeRate);
 
-    ExchangeRate map(UpdateExchangeRateRequestDTO request);
+    ExchangeRate map(UpdateExchangeRateRequest request);
+    ExchangeRate map(ExchangeRateEventItem request);
 }

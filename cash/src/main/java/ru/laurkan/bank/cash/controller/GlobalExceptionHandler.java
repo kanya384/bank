@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import ru.laurkan.bank.cash.exception.SendEventException;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Exception.class, SendEventException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e, Model model) {
         return ErrorResponse.builder()

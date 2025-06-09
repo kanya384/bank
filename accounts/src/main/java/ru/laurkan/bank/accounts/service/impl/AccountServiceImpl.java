@@ -2,6 +2,7 @@ package ru.laurkan.bank.accounts.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -16,13 +17,22 @@ import ru.laurkan.bank.accounts.model.Account;
 import ru.laurkan.bank.accounts.model.Currency;
 import ru.laurkan.bank.accounts.repository.AccountRepository;
 import ru.laurkan.bank.accounts.service.AccountService;
+import ru.laurkan.bank.events.accounts.AccountEvent;
+import ru.laurkan.bank.events.accounts.AccountEventType;
+import ru.laurkan.bank.events.accounts.AccountInfo;
+
+import static ru.laurkan.bank.accounts.configuration.KafkaConfiguration.ACCOUNT_NOTIFICATION_EVENTS_TOPIC;
+import static ru.laurkan.bank.accounts.configuration.KafkaConfiguration.OUTPUT_ACCOUNT_EVENTS_TOPIC;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final KafkaTemplate<Long, AccountInfo> domainEvents;
+    private final KafkaTemplate<Long, AccountEvent> notifications;
 
+    @Transactional
     @Override
     public Mono<AccountResponseDTO> create(CreateAccountRequestDTO createAccountRequestDTO) {
         var currency = Currency.valueOf(createAccountRequestDTO.getCurrency());
@@ -37,6 +47,24 @@ public class AccountServiceImpl implements AccountService {
                     }
 
                     return Mono.error(e);
+                })
+                .doOnSuccess(ac -> {
+                    try {
+                        domainEvents.send(OUTPUT_ACCOUNT_EVENTS_TOPIC, ac.getId(), accountMapper.event(ac))
+                                .get();
+                    } catch (Exception e) {
+                        throw new SendEventException(e.getMessage());
+                    }
+                })
+                .doOnSuccess(accountSaved -> {
+                    try {
+                        notifications
+                                .send(ACCOUNT_NOTIFICATION_EVENTS_TOPIC, account.getUserId(),
+                                        new AccountEvent(AccountEventType.ACCOUNT_CREATED, account.getId()))
+                                .get();
+                    } catch (Exception e) {
+                        throw new SendEventException(e.getMessage());
+                    }
                 })
                 .map(accountMapper::map);
     }
@@ -74,6 +102,14 @@ public class AccountServiceImpl implements AccountService {
                 .switchIfEmpty(Mono.error(new AccountNotFoundException(accountId)))
                 .doOnNext(account -> account.setAmount(account.getAmount() + amount))
                 .flatMap(accountRepository::save)
+                .doOnSuccess(ac -> {
+                    try {
+                        domainEvents.send(OUTPUT_ACCOUNT_EVENTS_TOPIC, ac.getId(), accountMapper.event(ac))
+                                .get();
+                    } catch (Exception e) {
+                        throw new SendEventException(e.getMessage());
+                    }
+                })
                 .map(accountMapper::map);
     }
 
@@ -89,6 +125,14 @@ public class AccountServiceImpl implements AccountService {
                     account.setAmount(account.getAmount() - amount);
                 })
                 .flatMap(accountRepository::save)
+                .doOnSuccess(ac -> {
+                    try {
+                        domainEvents.send(OUTPUT_ACCOUNT_EVENTS_TOPIC, ac.getId(), accountMapper.event(ac))
+                                .get();
+                    } catch (Exception e) {
+                        throw new SendEventException(e.getMessage());
+                    }
+                })
                 .map(accountMapper::map);
     }
 

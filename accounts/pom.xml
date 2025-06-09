@@ -41,6 +41,24 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- kafka streams -->
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.laurkan</groupId>
+            <artifactId>events</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
         <!-- liquibase and requirements -->
         <dependency>
             <groupId>org.liquibase</groupId>

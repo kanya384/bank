@@ -5,18 +5,21 @@ spring:
     name: accounts
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/accounts
-    username: postgres
-    password: password
+    username: test
+    password: test
   liquibase:
     url: jdbc:postgresql://localhost:5432/accounts
-    user: postgres
-    password: password
+    user: test
+    password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
-  cloud:
-    consul:
-      enabled: false
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1

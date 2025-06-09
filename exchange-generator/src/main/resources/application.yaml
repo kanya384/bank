@@ -1,16 +1,14 @@
 server:
   port: 9070
-clients:
-  exchange:
-    uri: ${GATEWAY_URL}/exchange
 spring:
   cloud:
     consul:
       enabled: false
   application:
     name: exchange-generator
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${KEYCLOAK_URL}
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_URL}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 0 #at most one delivery

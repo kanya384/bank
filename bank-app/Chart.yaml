@@ -10,9 +10,17 @@ dependencies:
     version: "24.3.0"
     repository: "https://charts.bitnami.com/bitnami"
 
+  - name: kafka
+    version: "32.2.9"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+
   - name: accounts
     version: "0.1.0"
     repository: "file://./charts/accounts"
+
+  - name: streams
+    version: "0.1.0"
+    repository: "file://./charts/streams"
 
   - name: oauth2proxy
     version: "0.1.0"
@@ -39,6 +47,10 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/exchange"
 
+  - name: exchangegenerator
+    version: "0.1.0"
+    repository: "file://./charts/exchangegenerator"
+
   - name: oauth2proxy
     version: "0.1.0"
     alias: exchange-proxy
@@ -52,7 +64,6 @@ dependencies:
     version: "0.1.0"
     alias: notifications-proxy
     repository: "file://./charts/oauth2proxy"
-
 
   - name: cash
     version: "0.1.0"

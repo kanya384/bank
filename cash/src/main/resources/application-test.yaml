@@ -11,19 +11,25 @@ spring:
   application:
     name: accounts
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/test
+    url: r2dbc:postgresql://localhost:5432/cash
     username: test
     password: test
   liquibase:
-    url: jdbc:postgresql://localhost:5432/test
+    url: jdbc:postgresql://localhost:5432/cash
     user: test
     password: test
     change-log: classpath:/db/changelog/db.changelog-master.xml
-  cloud:
-    consul:
-      enabled: false
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/bank/protocol/openid-connect/certs
+  kafka:
+    bootstrap-servers: localhost:9092
+    admin:
+      client-id: cash
+      fail-fast: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1

@@ -8,9 +8,6 @@ clients:
   notifications:
     uri: ${GATEWAY_URL}/notifications
 spring:
-  cloud:
-    consul:
-      enabled: false
   application:
     name: cash
   r2dbc:
@@ -27,3 +24,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_URL}
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    admin:
+      client-id: cash
+      fail-fast: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: 1
