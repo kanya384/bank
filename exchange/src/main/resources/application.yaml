@@ -30,3 +30,10 @@ spring:
       group-id: exchange
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы

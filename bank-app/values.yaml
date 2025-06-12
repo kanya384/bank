@@ -35,6 +35,11 @@ kafka:
     external:
       protocol: PLAINTEXT
 
+zipkin:
+  storageType: mem
+  cassandra:
+    enabled: false
+
 accounts:
   replicaCount: 1
   image:
@@ -49,6 +54,7 @@ accounts:
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/accounts"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 streams:
   replicaCount: 1
@@ -61,6 +67,7 @@ streams:
     port: 1000
   config:
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 main-db:
   enabled: true
@@ -121,6 +128,7 @@ blocker:
     port: 9010
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 blocker-proxy:
   service:
@@ -165,6 +173,7 @@ exchange:
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/exchange"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 exchange-proxy:
   service:
@@ -208,6 +217,7 @@ exchangegenerator:
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     keycloak_url: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs"
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 notifications:
   replicaCount: 1
@@ -225,7 +235,7 @@ notifications:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     mail_username: kanya384@mail.ru
     mail_password: up1qKNZxxRHAnSKs0GXs
-
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 notifications-proxy:
   service:
@@ -271,6 +281,7 @@ cash:
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 cash-proxy:
   service:
@@ -317,6 +328,7 @@ transfer:
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
 
 transfer-proxy:
   service:
@@ -368,3 +380,4 @@ front:
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"

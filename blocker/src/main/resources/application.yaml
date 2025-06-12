@@ -11,3 +11,10 @@ spring:
   cloud:
     consul:
       enabled: false
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы

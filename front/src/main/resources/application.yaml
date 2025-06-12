@@ -21,3 +21,10 @@ spring:
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_URL}
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы

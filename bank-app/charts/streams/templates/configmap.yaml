@@ -14,3 +14,4 @@ data:
     {{- end }}
 
     KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+    ZIPKIN_ENDPOINT: {{ tpl .Values.config.zipkin_endpoint . | quote }}

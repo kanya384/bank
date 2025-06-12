@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         DB_PASSWORD     = credentials('DB_PASSWORD')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
-        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+        IMAGE_TAG       = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         KEYCLOAK_ACCOUNTS_SECRET = credentials('KEYCLOAK_ACCOUNTS_SECRET')
         KEYCLOAK_BLOCKER_SECRET = credentials('KEYCLOAK_BLOCKER_SECRET')
         KEYCLOAK_CASH_SECRET = credentials('KEYCLOAK_CASH_SECRET')

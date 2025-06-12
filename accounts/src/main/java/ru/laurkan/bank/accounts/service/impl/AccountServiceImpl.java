@@ -35,36 +35,17 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public Mono<AccountResponseDTO> create(CreateAccountRequestDTO createAccountRequestDTO) {
-        var currency = Currency.valueOf(createAccountRequestDTO.getCurrency());
         var account = new Account(createAccountRequestDTO.getUserId(),
                 Currency.valueOf(createAccountRequestDTO.getCurrency()));
 
-
-        return accountRepository.save(account)
-                .onErrorResume(e -> {
-                    if (e instanceof DuplicateKeyException) {
-                        return Mono.error(new UserAlreadyHasAccountInThisCurrency(currency));
-                    }
-
-                    return Mono.error(e);
-                })
+        return saveAccountToDb(account)
                 .doOnSuccess(ac -> {
-                    try {
-                        domainEvents.send(OUTPUT_ACCOUNT_EVENTS_TOPIC, ac.getId(), accountMapper.event(ac))
-                                .get();
-                    } catch (Exception e) {
-                        throw new SendEventException(e.getMessage());
-                    }
+                    sendDomainEvent(OUTPUT_ACCOUNT_EVENTS_TOPIC, ac.getId(),
+                            accountMapper.event(ac));
                 })
                 .doOnSuccess(accountSaved -> {
-                    try {
-                        notifications
-                                .send(ACCOUNT_NOTIFICATION_EVENTS_TOPIC, account.getUserId(),
-                                        new AccountEvent(AccountEventType.ACCOUNT_CREATED, account.getId()))
-                                .get();
-                    } catch (Exception e) {
-                        throw new SendEventException(e.getMessage());
-                    }
+                    sendNotification(ACCOUNT_NOTIFICATION_EVENTS_TOPIC, account.getUserId(),
+                            new AccountEvent(AccountEventType.ACCOUNT_CREATED, account.getId()));
                 })
                 .map(accountMapper::map);
     }
@@ -142,5 +123,50 @@ public class AccountServiceImpl implements AccountService {
         return takeMoneyFromAccount(request.getFromAccountId(), request.getFromMoneyAmount())
                 .flatMap(__ -> putMoneyToAccount(request.getToAccountId(), request.getToMoneyAmount()))
                 .map(__ -> TransferMoneyResponseDTO.builder().completed(true).build());
+    }
+
+    private Mono<Account> saveAccountToDb(Account account) {
+        //var span = tracer.nextSpan().name("Сохранение аккаунта в бд").start();
+
+        try {
+            return accountRepository.save(account);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException) {
+                return Mono.error(new UserAlreadyHasAccountInThisCurrency(account.getCurrency()));
+            }
+
+            return Mono.error(e);
+        }
+//        } finally {
+//            span.finish();
+//        }
+    }
+
+    private void sendDomainEvent(String topic, Long key, AccountInfo event) {
+        //var span = tracer.nextSpan().name("Отправка доменного события аккаунта в брокер").start();
+
+        try {
+            domainEvents.send(topic, key, event)
+                    .get();
+        } catch (Exception e) {
+            throw new SendEventException(e.getMessage());
+        }
+//        } finally {
+//            span.finish();
+//        }
+    }
+
+    private void sendNotification(String topic, Long key, AccountEvent event) {
+        //var span = tracer.nextSpan().name("Отправка уведомления по аккаунту в брокер").start();
+
+        try {
+            notifications.send(topic, key, event)
+                    .get();
+        } catch (Exception e) {
+            throw new SendEventException(e.getMessage());
+        }
+//        } finally {
+//            span.finish();
+//        }
     }
 }

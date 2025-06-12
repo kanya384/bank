@@ -12,3 +12,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: 0 #at most one delivery
+management:
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans
