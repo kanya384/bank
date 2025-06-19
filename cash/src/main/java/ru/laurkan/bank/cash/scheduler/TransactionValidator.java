@@ -1,6 +1,7 @@
 package ru.laurkan.bank.cash.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -14,6 +15,7 @@ import ru.laurkan.bank.cash.repository.TransactionRepository;
 import ru.laurkan.bank.clients.blocker.BlockerClient;
 import ru.laurkan.bank.clients.blocker.dto.DecisionResponse;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class TransactionValidator {
@@ -27,20 +29,25 @@ public class TransactionValidator {
                 .findByTransactionStatus(TransactionStatus.CREATED)
                 .map(transactionMapper::map)
                 .flatMap(transaction -> validate(transaction)
+                        .doOnError(e -> {
+                            log.error("error request transaction validation ({}): {}",
+                                    transaction, e.getMessage());
+                        })
                         .flatMap(decisionResponse -> {
                             transaction.setTransactionStatus(decisionResponse.isBlocked() ?
                                     TransactionStatus.BLOCKED :
                                     TransactionStatus.APPROVED);
-                            return transactionRepository.save(transactionMapper.mapToDb(transaction));
+                            return transactionRepository.save(transactionMapper.mapToDb(transaction))
+                                    .doOnError(e -> {
+                                        log.error("error saving validated transaction ({}): {}", transaction,
+                                                e.getMessage());
+                                    });
                         }))
-                .map(transactionMapper::map)
-                .onErrorResume(e -> {
-                    //TODO - log error
-                    return Mono.empty();
-                });
+                .map(transactionMapper::map);
     }
 
     private Mono<DecisionResponse> validate(Transaction transaction) {
+        log.debug("transaction validation started: {}", transaction);
         return switch (transaction) {
             case DepositTransaction depositTransaction ->
                     blockerClient.validate(transactionMapper.map(depositTransaction));

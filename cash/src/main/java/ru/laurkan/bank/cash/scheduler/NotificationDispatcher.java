@@ -1,10 +1,12 @@
 package ru.laurkan.bank.cash.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.laurkan.bank.cash.exception.SendEventException;
 import ru.laurkan.bank.cash.exception.UnsupportedTransactionType;
 import ru.laurkan.bank.cash.mapper.TransactionMapper;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static ru.laurkan.bank.cash.configuration.KafkaConfiguration.OUTPUT_CASH_NOTIFICATION_EVENTS_TOPIC;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class NotificationDispatcher {
@@ -38,19 +41,26 @@ public class NotificationDispatcher {
                 .doOnNext(transaction -> {
                     CashEvent cashEvent = cashEventFromTransaction(transaction);
 
-                    try {
-                        notificationsTemplate.send(OUTPUT_CASH_NOTIFICATION_EVENTS_TOPIC,
-                                transaction.getAccountId(), cashEvent).get();
-                    } catch (Exception e) {
-                        throw new SendEventException(e.getMessage());
-                    }
+                    Mono.fromFuture(notificationsTemplate.send(OUTPUT_CASH_NOTIFICATION_EVENTS_TOPIC,
+                            transaction.getAccountId(), cashEvent))
+                            .doOnNext(result -> {
+                                log.debug("notification event sent {}, offset - {}", cashEvent,
+                                        result.getRecordMetadata().offset());
+                            })
+                            .doOnError(e -> {
+                                log.error("error sending notification event {}", e.getMessage());
+                                throw new SendEventException(e.getMessage());
+                            });
                 })
                 .map(transaction -> {
                     transaction.setNotificationSent(true);
                     return transaction;
                 })
                 .map(transactionMapper::mapToDb)
-                .flatMap(transactionRepository::save);
+                .flatMap(transactionRepository::save)
+                .doOnNext(transactionRepositoryDTO -> {
+                    log.info("notification of transaction {} successfully sent", transactionRepositoryDTO);
+                });
     }
 
     private CashEvent cashEventFromTransaction(Transaction transaction) {

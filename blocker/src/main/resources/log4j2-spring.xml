@@ -4,7 +4,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [${spring:spring.application.name}/%c{1}#%M/%L/%X{traceId}/%X{spanId}]: %msg\n"/>
         </Console>
-        <Kafka name="Kafka" topic="accounts-logs" syncSend="false">
+        <Kafka name="Kafka" topic="input-logs" syncSend="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [${spring:spring.application.name}/%c{1}#%M/%L/%X{traceId}/%X{spanId}]: %msg"/>
             <Property name="bootstrap.servers">${env:KAFKA_URL}</Property>
         </Kafka>

@@ -1,6 +1,7 @@
 package ru.laurkan.bank.cash.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import ru.laurkan.bank.clients.accounts.dto.accounts.TakeMoneyFromAccount;
 import ru.laurkan.bank.clients.accounts.exception.MoneyException;
 import ru.laurkan.bank.events.cash.CashEvent;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class TransactionDispatcher {
@@ -33,7 +35,8 @@ public class TransactionDispatcher {
                 .findByTransactionStatus(TransactionStatus.APPROVED)
                 .map(transactionMapper::map)
                 .flatMap(this::processTransaction)
-                .map(transactionMapper::map);
+                .map(transactionMapper::map)
+                .doOnNext(transaction -> log.info("transaction processed {}", transaction));
     }
 
     private Mono<TransactionRepositoryDTO> processTransaction(Transaction transaction) {
@@ -55,13 +58,20 @@ public class TransactionDispatcher {
                     } else {
                         transaction.setTransactionStatus(TransactionStatus.FAILED);
                     }
+                    log.debug("transaction processing result: {}", transaction);
 
                     return transactionRepository.save(transactionMapper.mapToDb(transaction))
+                            .doOnError(ex -> {
+                                log.error("error saving processed fail transaction: {}", ex.getMessage());
+                            })
                             .flatMap(__ -> Mono.error(e));
                 })
                 .flatMap(account -> {
                     transaction.setTransactionStatus(TransactionStatus.COMPLETED);
-                    return transactionRepository.save(transactionMapper.mapToDb(transaction));
+                    return transactionRepository.save(transactionMapper.mapToDb(transaction))
+                            .doOnError(ex -> {
+                                log.error("error saving processed success transaction: {}", ex.getMessage());
+                            });
                 });
     }
 }
