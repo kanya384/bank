@@ -8,6 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import ru.laurkan.bank.events.accounts.AccountEvent;
 import ru.laurkan.bank.events.accounts.AccountInfo;
+import ru.laurkan.bank.events.users.UserEvent;
 import ru.laurkan.bank.events.users.UserInfo;
 
 @Configuration
@@ -39,8 +40,15 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<Long, UserInfo> domainUserEvents(ProducerFactory<Long, UserInfo> producerFactory) {
+    public KafkaTemplate<Long, UserInfo> domainUserInfo(ProducerFactory<Long, UserInfo> producerFactory) {
         KafkaTemplate<Long, UserInfo> template = new KafkaTemplate<>(producerFactory);
+        template.setObservationEnabled(true);
+        return template;
+    }
+
+    @Bean
+    public KafkaTemplate<Long, UserEvent> domainUserEvents(ProducerFactory<Long, UserEvent> producerFactory) {
+        KafkaTemplate<Long, UserEvent> template = new KafkaTemplate<>(producerFactory);
         template.setObservationEnabled(true);
         return template;
     }

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class RegisterUserRequestDTO {
     @Size(min = 3)
     private String login;
