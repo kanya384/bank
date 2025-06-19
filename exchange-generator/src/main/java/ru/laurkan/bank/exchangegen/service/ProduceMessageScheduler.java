@@ -1,6 +1,7 @@
 package ru.laurkan.bank.exchangegen.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import ru.laurkan.bank.exchangegen.model.ExchangeRate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ProduceMessageScheduler {
@@ -32,7 +34,14 @@ public class ProduceMessageScheduler {
                     exchangeRates.forEach(rate -> items
                             .add(new ExchangeRateEventItem(rate.getCurrency().toString(), rate.getRate())));
                     rates.setRates(items);
-                    kafkaTemplate.send(topic, key, rates);
+                    Mono.fromFuture(kafkaTemplate.send(topic, key, rates))
+                            .doOnNext(result ->
+                                    log.debug("sent new exchange rates {}: offset - {}",
+                                            exchangeRates, result.getRecordMetadata().offset()))
+                            .doOnError(e -> {
+                                log.error("error sending new exchange rates: {}", e.getMessage());
+                            })
+                            .subscribe();
                 })
                 .then();
     }
