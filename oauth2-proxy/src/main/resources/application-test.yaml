@@ -24,42 +24,10 @@ spring:
             client-secret: 2wSCmpPd2wlXWO5LgZV3JTQ2njtqhOQq
             scope: profile
             authorization-grant-type: client_credentials
-#          blocker:
-#            provider: keycloak
-#            client-id: blocker
-#            client-secret: ${blocker_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          cash:
-#            provider: keycloak
-#            client-id: cash
-#            client-secret: ${cash_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          exchange:
-#            provider: keycloak
-#            client-id: exchange
-#            client-secret: ${exchange_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          exchange-generator:
-#            provider: keycloak
-#            client-id: exchange_generator
-#            client-secret: ${exchange_generator_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          notifications:
-#            provider: keycloak
-#            client-id: notifications
-#            client-secret: ${notifications_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
-#          transfer:
-#            provider: keycloak
-#            client-id: transfer
-#            client-secret: ${transfer_secret}
-#            scope: profile
-#            authorization-grant-type: client_credentials
+management:
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans
 logging:
   level:
     org:

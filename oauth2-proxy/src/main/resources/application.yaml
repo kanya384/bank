@@ -23,6 +23,14 @@ spring:
             client-secret: ${SPRING_CLIENT_SECRET}
             scope: profile
             authorization-grant-type: client_credentials
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1 # Сэмплируем все запросы
 logging:
   level:
     org:
