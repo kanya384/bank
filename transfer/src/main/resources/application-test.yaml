@@ -11,7 +11,7 @@ clients:
     uri: http://localhost:9060
 spring:
   application:
-    name: accounts
+    name: transfer
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/transfers
     username: test
