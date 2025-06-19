@@ -2,6 +2,7 @@ package ru.laurkan.bank.accounts.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -150,15 +151,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private Mono<Account> saveAccountToDb(Account account) {
-        try {
-            return accountRepository.save(account);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {
-                return Mono.error(new UserAlreadyHasAccountInThisCurrency(account.getCurrency()));
-            }
+            return accountRepository.save(account)
+                    .doOnError(e -> {
+                        if (e instanceof DuplicateKeyException) {
+                             throw new UserAlreadyHasAccountInThisCurrency(account.getCurrency());
+                        }
 
-            return Mono.error(e);
-        }
+                        throw new InternalException(e.getMessage());
+                    });
+
     }
 
     private void sendDomainEvent(String topic, Long key, AccountInfo event) {
