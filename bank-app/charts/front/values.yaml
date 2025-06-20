@@ -62,6 +62,7 @@ tolerations: [ ]
 affinity: { }
 
 config:
+  kafka_url: "http://{{ .Release.Namespace }}-kafka:9092"
   keycloak_url: "http://{{ .Release.Namespace }}-keycloak.svc.cluster.local:80"
   gateway_url: "http://ingress-nginx-controller.ingress-nginx"
   zipkin_endpoint: "http://{{ .Release.Namespace }}-zipkin:9411/api/v2/spans"

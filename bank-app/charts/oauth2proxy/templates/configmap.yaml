@@ -8,5 +8,7 @@ data:
     UPSTREAM_URI: {{ tpl .Values.config.upstream_uri . | quote }}
     KEYCLOAK_URI: {{ tpl .Values.config.keycloak_uri . | quote }}
     SPRING_CLIENT_ID: {{ .Values.config.clientId }}
+    KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+    ZIPKIN_ENDPOINT: {{ tpl .Values.config.zipkin_endpoint . | quote }}
 
 

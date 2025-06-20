@@ -15,4 +15,5 @@ data:
 
   KEYCLOAK_URL: {{ tpl .Values.config.keycloak_url . | quote }}
   GATEWAY_URL: {{ tpl .Values.config.gateway_url . | quote }}
+  KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
   ZIPKIN_ENDPOINT: {{ tpl .Values.config.zipkin_endpoint . | quote }}

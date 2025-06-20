@@ -67,4 +67,6 @@ config:
   clientSecret: GHGs7pGPlnRk8NCLI9fY7UiJ9u0uDUzU
   upstream_uri: "http://localhost"
   keycloak_uri: "http://{{ .Release.Namespace }}-keycloak:80"
+  kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+  zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 

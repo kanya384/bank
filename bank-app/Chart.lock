@@ -5,9 +5,6 @@ dependencies:
 - name: kafka
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 32.2.9
-- name: zipkin
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 1.3.5
 - name: accounts
   repository: file://./charts/accounts
   version: 0.1.0
@@ -56,5 +53,5 @@ dependencies:
 - name: front
   repository: file://./charts/front
   version: 0.1.0
-digest: sha256:ff661da25c4e88ae0fda228aad2c566ea425177db674aaba1fb5786b8957bd0a
-generated: "2025-06-12T10:40:31.958271+03:00"
+digest: sha256:57100fee786cdda0197814bbf34bc98acc3b639a3f9ac69fc417c30757cb093c
+generated: "2025-06-20T10:57:09.678126+03:00"

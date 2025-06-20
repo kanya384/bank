@@ -35,11 +35,6 @@ kafka:
     external:
       protocol: PLAINTEXT
 
-zipkin:
-  storageType: mem
-  cassandra:
-    enabled: false
-
 accounts:
   replicaCount: 1
   image:
@@ -54,7 +49,7 @@ accounts:
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/accounts"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 streams:
   replicaCount: 1
@@ -67,7 +62,7 @@ streams:
     port: 1000
   config:
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 main-db:
   enabled: true
@@ -116,6 +111,8 @@ accounts-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-accounts:9000"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 blocker:
   replicaCount: 1
@@ -128,7 +125,8 @@ blocker:
     port: 9010
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 blocker-proxy:
   service:
@@ -158,6 +156,8 @@ blocker-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-blocker:9010"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 exchange:
   replicaCount: 1
@@ -173,7 +173,7 @@ exchange:
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/exchange"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 exchange-proxy:
   service:
@@ -203,6 +203,8 @@ exchange-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-exchange:9060"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 exchangegenerator:
   replicaCount: 1
@@ -217,7 +219,7 @@ exchangegenerator:
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     keycloak_url: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs"
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 notifications:
   replicaCount: 1
@@ -235,7 +237,7 @@ notifications:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     mail_username: kanya384@mail.ru
     mail_password: up1qKNZxxRHAnSKs0GXs
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 notifications-proxy:
   service:
@@ -265,6 +267,8 @@ notifications-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-notifications:9020"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 cash:
   replicaCount: 1
@@ -281,7 +285,7 @@ cash:
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 cash-proxy:
   service:
@@ -311,6 +315,8 @@ cash-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-cash:9050"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 
 transfer:
@@ -328,7 +334,7 @@ transfer:
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 transfer-proxy:
   service:
@@ -358,6 +364,8 @@ transfer-proxy:
     clientSecret: topsecret
     upstream_uri: "http://{{ .Release.Name }}-transfer:9090"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 front:
   replicaCount: 1
@@ -380,4 +388,5 @@ front:
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
-    zipkin_endpoint: "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans"
+    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
+    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
