@@ -83,7 +83,7 @@ main-db:
           create database transfer;
 
 
-accounts-proxy:
+oauth2proxy:
   service:
     port: 8070
   image:
@@ -95,24 +95,61 @@ accounts-proxy:
     className: "nginx"
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+      #nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
       - host: ingress-nginx-controller.ingress-nginx
         paths:
           - path: /accounts(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
+            pathType: ImplementationSpecific
+          - path: /blocker(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /exchange(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /notifications(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /cash(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /transfer(/|$)(.*)
+            pathType: ImplementationSpecific
+      - host: main.test.local
         paths:
           - path: /accounts(/|$)(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific
+          - path: /blocker(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /exchange(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /notifications(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /cash(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /transfer(/|$)(.*)
+            pathType: ImplementationSpecific
     tls: []
   config:
     clientId: accounts
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-accounts:9000"
     keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
+    clients:
+      - clientId: accounts
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-accounts:9000"
+      - clientId: blocker
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-blocker:9010"
+      - clientId: exchange
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-exchange:9060"
+      - clientId: notifications
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-notifications:9020"
+      - clientId: cash
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-cash:9050"
+      - clientId: transfer
+        clientSecret: topsecret
+        upstream: "http://{{ .Release.Name }}-transfer:9090"
 
 blocker:
   replicaCount: 1
@@ -125,37 +162,6 @@ blocker:
     port: 9010
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
-    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
-
-blocker-proxy:
-  service:
-    port: 8070
-  image:
-    repository: laurkan/oauth2-proxy
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    hosts:
-      - host: ingress-nginx-controller.ingress-nginx
-        paths:
-          - path: /blocker(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
-        paths:
-          - path: /blocker(/|$)(.*)
-            pathType: Prefix
-    tls: []
-  config:
-    clientId: blocker
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-blocker:9010"
-    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
@@ -173,37 +179,6 @@ exchange:
     database_url: "postgresql://{{ .Release.Name }}-main-db:5432/exchange"
     database_username: "postgres"
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
-
-exchange-proxy:
-  service:
-    port: 8070
-  image:
-    repository: laurkan/oauth2-proxy
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    hosts:
-      - host: ingress-nginx-controller.ingress-nginx
-        paths:
-          - path: /exchange(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
-        paths:
-          - path: /exchange(/|$)(.*)
-            pathType: Prefix
-    tls: []
-  config:
-    clientId: exchange
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-exchange:9060"
-    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
-    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 exchangegenerator:
@@ -239,37 +214,6 @@ notifications:
     mail_password: up1qKNZxxRHAnSKs0GXs
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
-notifications-proxy:
-  service:
-    port: 8070
-  image:
-    repository: laurkan/oauth2-proxy
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    hosts:
-      - host: ingress-nginx-controller.ingress-nginx
-        paths:
-          - path: /notifications(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
-        paths:
-          - path: /notifications(/|$)(.*)
-            pathType: Prefix
-    tls: []
-  config:
-    clientId: notifications
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-notifications:9020"
-    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
-    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
-    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
-
 cash:
   replicaCount: 1
   image:
@@ -286,38 +230,6 @@ cash:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
-
-cash-proxy:
-  service:
-    port: 8070
-  image:
-    repository: laurkan/oauth2-proxy
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    hosts:
-      - host: ingress-nginx-controller.ingress-nginx
-        paths:
-          - path: /cash(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
-        paths:
-          - path: /cash(/|$)(.*)
-            pathType: Prefix
-    tls: []
-  config:
-    clientId: cash
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-cash:9050"
-    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
-    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
-    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
-
 
 transfer:
   replicaCount: 1
@@ -336,36 +248,6 @@ transfer:
     gateway_url: "http://ingress-nginx-controller.ingress-nginx"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
-transfer-proxy:
-  service:
-    port: 8070
-  image:
-    repository: laurkan/oauth2-proxy
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    hosts:
-      - host: ingress-nginx-controller.ingress-nginx
-        paths:
-          - path: /transfer(/|$)(.*)
-            pathType: Prefix
-      - host: bank.test.local
-        paths:
-          - path: /transfer(/|$)(.*)
-            pathType: Prefix
-    tls: []
-  config:
-    clientId: transfer
-    clientSecret: topsecret
-    upstream_uri: "http://{{ .Release.Name }}-transfer:9090"
-    keycloak_uri: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
-    kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
-    zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
 
 front:
   replicaCount: 1

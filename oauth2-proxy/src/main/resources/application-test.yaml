@@ -1,7 +1,12 @@
 server:
   port: 8070
-upstream-uri: http://localhost:9010
-client-id: blocker
+clients:
+  blocker:
+    clientId: blocker
+    upstream: http://localhost:9010
+  transfer:
+    clientId: transfer
+    upstream: http://localhost:9010
 spring:
   application:
     name: oauth2-proxy
@@ -10,7 +15,7 @@ spring:
       enabled: false
     gateway:
       proxy:
-        sensitive: []
+        sensitive: [ ]
   security:
     oauth2:
       client:
@@ -21,7 +26,13 @@ spring:
           blocker:
             provider: keycloak
             client-id: blocker
-            client-secret: 2wSCmpPd2wlXWO5LgZV3JTQ2njtqhOQq
+            client-secret: I6Gobzmfh9FbQNVoNEie3OzOQxkKaGzz
+            scope: profile
+            authorization-grant-type: client_credentials
+          transfer:
+            provider: keycloak
+            client-id: transfer
+            client-secret: eaUEsRwTCLEi6C8fuoF9GCN5JTvGBYMq
             scope: profile
             authorization-grant-type: client_credentials
 management:
