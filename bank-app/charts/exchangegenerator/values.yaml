@@ -65,3 +65,4 @@ config:
   kafka_url: "http://{{ .Release.Namespace }}-kafka.svc.cluster.local:9092"
   gateway_url: "http://ingress-nginx-controller.svc.cluster.local:80"
   keycloak_url: "http://{{ .Release.Namespace }}-keycloak.svc.cluster.local:80"
+  zipkin_endpoint: "http://{{ .Release.Namespace }}-zipkin:9411/api/v2/spans"

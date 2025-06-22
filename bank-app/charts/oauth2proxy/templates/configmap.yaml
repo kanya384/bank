@@ -5,8 +5,20 @@ metadata:
   labels:
     {{- include "oauth2proxy.labels" . | nindent 4 }}
 data:
+    {{- range $index, $client := .Values.config.clients }}
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ upper $client.clientId }}_PROVIDER: keycloak
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ upper $client.clientId }}_CLIENT-ID: {{ $client.clientId }}
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ upper $client.clientId }}_SCOPE: profile
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ upper $client.clientId }}_authorization-grant-type: client_credentials
+    {{- end }}
     UPSTREAM_URI: {{ tpl .Values.config.upstream_uri . | quote }}
     KEYCLOAK_URI: {{ tpl .Values.config.keycloak_uri . | quote }}
     SPRING_CLIENT_ID: {{ .Values.config.clientId }}
+    KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+    ZIPKIN_ENDPOINT: {{ tpl .Values.config.zipkin_endpoint . | quote }}
+    {{- range $index, $client := .Values.config.clients }}
+    CLIENTS_{{ upper $client.clientId }}_CLIENT_ID: {{ $client.clientId }}
+    CLIENTS_{{ upper $client.clientId }}_UPSTREAM: {{ tpl $client.upstream $ | quote }}
+    {{- end }}
 
 

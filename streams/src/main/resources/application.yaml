@@ -1,6 +1,8 @@
 server:
   port: 1000
 spring:
+  application:
+    name: streams
   kafka:
     bootstrap-servers: ${KAFKA_URL}
     streams:
@@ -11,3 +13,15 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1 # Сэмплируем все запросы
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

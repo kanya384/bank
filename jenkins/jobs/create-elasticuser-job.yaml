@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-elasticsearch-user
+  annotations:
+    # Выполняет хук после запуска Elasticsearch
+    "helm.sh/hook": post-install
+    # Определяет порядок выполнения хуков
+    "helm.sh/hook-weight": "5"
+    # Удаляет Job после успешного выполнения
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+        - name: create-elasticsearch-user
+          image: curlimages/curl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Ждём, пока Elasticsearch станет доступен
+              until curl --insecure -s https://elasticsearch:9200; do
+                echo "Waiting for Elasticsearch to start..."
+                sleep 90
+              done
+
+              # Создаём администратора
+              curl --insecure -X POST "https://elasticsearch:9200/_security/user/administrator" \
+                -H 'Content-Type: application/json' \
+                -d '
+              {
+                "password": "administrator",
+                "roles": [ "admin", "kibana_user" ],
+                "full_name": "Admin",
+                "email": "administrator@mail.ru",
+                "enabled": true
+              }'
+      restartPolicy: OnFailure

@@ -21,7 +21,7 @@ public class BlockerServiceTest {
     public void verify_shouldVerifyTransaction() {
         var transaction = new DepositTransaction();
         transaction.setAccountId(1L);
-        transaction.setMoney(100.0);
+        transaction.setAmount(100.0);
         transaction.setCreatedAt(LocalDateTime.now());
 
         StepVerifier.create(blockerService.verify(transaction))

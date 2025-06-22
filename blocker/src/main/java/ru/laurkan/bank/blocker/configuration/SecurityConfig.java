@@ -21,8 +21,7 @@ public class SecurityConfig {
                 )
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .oauth2ResourceServer(serverSpec -> serverSpec
-                        .jwt(jwtSpec -> {
-                        })
+                        .jwt(jwtSpec -> {})
                 )
                 .build();
     }

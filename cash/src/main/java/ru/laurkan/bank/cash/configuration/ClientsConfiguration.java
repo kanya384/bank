@@ -18,23 +18,22 @@ public class ClientsConfiguration {
     String notificationsUri;
 
     @Bean
-    public WebClient webClient() {
-        return WebClient.builder()
-                .build();
+    public WebClient webClient(WebClient.Builder builder) {
+        return builder.build();
     }
 
     @Bean
-    public AccountsClient accountsClient() {
-        return new AccountsClient(accountsUri, webClient());
+    public AccountsClient accountsClient(WebClient webClient) {
+        return new AccountsClient(accountsUri, webClient);
     }
 
     @Bean
-    public BlockerClient blockerClient() {
-        return new BlockerClient(blockerUri, webClient());
+    public BlockerClient blockerClient(WebClient webClient) {
+        return new BlockerClient(blockerUri, webClient);
     }
 
     @Bean
-    public NotificationClient notificationClient() {
-        return new NotificationClient(notificationsUri, webClient());
+    public NotificationClient notificationClient(WebClient webClient) {
+        return new NotificationClient(notificationsUri, webClient);
     }
 }

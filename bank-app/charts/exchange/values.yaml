@@ -67,3 +67,4 @@ config:
   database_url: "postgresql://postgres-postgresql.{{ .Release.Namespace }}.svc.cluster.local:5432/exchange"
   database_username: "exchange"
   keycloak_url: "http://{{ .Release.Namespace }}-keycloak.svc.cluster.local:80"
+  zipkin_endpoint: "http://{{ .Release.Namespace }}-zipkin:9411/api/v2/spans"

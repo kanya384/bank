@@ -60,11 +60,13 @@ spec:
             - configMapRef:
                 name: {{ include "oauth2proxy.fullname" . }}
           env:
-            - name: SPRING_CLIENT_SECRET
+            {{- range $index, $client := .Values.config.clients }}
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_{{ upper $client.clientId }}_CLIENT-SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "oauth2proxy.fullname" . }}
-                  key: client-secret
+                  name: {{ include "oauth2proxy.fullname" $ }}
+                  key: {{ $client.clientId }}-secret
+            {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}

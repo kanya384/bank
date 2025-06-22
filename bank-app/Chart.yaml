@@ -24,7 +24,6 @@ dependencies:
 
   - name: oauth2proxy
     version: "0.1.0"
-    alias: accounts-proxy
     repository: "file://./charts/oauth2proxy"
 
   - name: postgresql
@@ -37,12 +36,6 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/blocker"
 
-  - name: oauth2proxy
-    version: "0.1.0"
-    alias: blocker-proxy
-    repository: "file://./charts/oauth2proxy"
-
-
   - name: exchange
     version: "0.1.0"
     repository: "file://./charts/exchange"
@@ -51,37 +44,17 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/exchangegenerator"
 
-  - name: oauth2proxy
-    version: "0.1.0"
-    alias: exchange-proxy
-    repository: "file://./charts/oauth2proxy"
-
   - name: notifications
     version: "0.1.0"
     repository: "file://./charts/notifications"
-
-  - name: oauth2proxy
-    version: "0.1.0"
-    alias: notifications-proxy
-    repository: "file://./charts/oauth2proxy"
 
   - name: cash
     version: "0.1.0"
     repository: "file://./charts/cash"
 
-  - name: oauth2proxy
-    version: "0.1.0"
-    alias: cash-proxy
-    repository: "file://./charts/oauth2proxy"
-
   - name: transfer
     version: "0.1.0"
     repository: "file://./charts/transfer"
-
-  - name: oauth2proxy
-    version: "0.1.0"
-    alias: transfer-proxy
-    repository: "file://./charts/oauth2proxy"
 
   - name: front
     version: "0.1.0"

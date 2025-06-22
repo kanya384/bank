@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         DB_PASSWORD     = credentials('DB_PASSWORD')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
-        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+        IMAGE_TAG       = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         KEYCLOAK_ACCOUNTS_SECRET = credentials('KEYCLOAK_ACCOUNTS_SECRET')
         KEYCLOAK_BLOCKER_SECRET = credentials('KEYCLOAK_BLOCKER_SECRET')
         KEYCLOAK_CASH_SECRET = credentials('KEYCLOAK_CASH_SECRET')
@@ -60,51 +60,78 @@ pipeline {
             }
         }
 
+        stage('Helm Deploy monitoring') {
+            steps {
+                sh """
+                helm install monitoring monitoring/. --namespace monitoring --create-namespace
+                helm upgrade monitoring monitoring/. --namespace monitoring --set kibana.enabled=true
+                kubectl -n monitoring apply -f jenkins/jobs/create-elasticuser-job.yaml
+                kubectl -n monitoring apply -f jenkins/jobs/elastic-mappings-job.yaml
+                """
+            }
+        }
+
+        stage('Manual Approval for Deploy to TEST') {
+            steps {
+                input message: 'Deploy to TEST environment?', ok: 'Yes, deploy'
+            }
+        }
+
         stage('Helm Deploy to TEST') {
             steps {
                 sh """
                 helm upgrade --install bank-app bank-app/. \\
                                      --namespace test --create-namespace \\
                                      --set main-db.auth.password=${DB_PASSWORD} \\
-                					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
-                					 --set accounts.image.tag=${IMAGE_TAG} \\
-                					 --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
+                                     --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
+                                     --set accounts.image.tag=${IMAGE_TAG} \\
+                                     --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
                                      --set streams.image.tag=${IMAGE_TAG} \\
-                					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
-                					 --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
-                					 --set blocker.image.tag=${IMAGE_TAG} \\
-                					 --set blocker-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set blocker-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set blocker-proxy.config.clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
-                					 --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
-                					 --set cash.image.tag=${IMAGE_TAG} \\
-                					 --set cash-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set cash-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set cash-proxy.config.clientSecret=${KEYCLOAK_CASH_SECRET} \\
-                					 --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
-                					 --set exchange.image.tag=${IMAGE_TAG} \\
-                					 --set exchange-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set exchange-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set exchange-proxy.config.clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
-                					 --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
-                					 --set notifications.image.tag=${IMAGE_TAG} \\
-                					 --set notifications-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set notifications-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set notifications-proxy.config.clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set oauth2proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                                     --set oauth2proxy.image.tag=${IMAGE_TAG} \\
+                                     --set oauth2proxy.config.clients[0].clientId=accounts \\
+                                     --set oauth2proxy.config.clients[0].clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
+                                     --set oauth2proxy.config.clients[0].upstream="http://{{ .Release.Name }}-accounts:9000" \\
+                                     --set oauth2proxy.config.clients[1].clientId=blocker \\
+                                     --set oauth2proxy.config.clients[1].clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
+                                     --set oauth2proxy.config.clients[1].upstream="http://{{ .Release.Name }}-blocker:9010" \\
+                                     --set oauth2proxy.config.clients[2].clientId=exchange \\
+                                     --set oauth2proxy.config.clients[2].clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
+                                     --set oauth2proxy.config.clients[2].upstream="http://{{ .Release.Name }}-exchange:9010" \\
+                                     --set oauth2proxy.config.clients[3].clientId=notifications \\
+                                     --set oauth2proxy.config.clients[3].clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set oauth2proxy.config.clients[3].upstream="http://{{ .Release.Name }}-notifications:9020" \\
+                                     --set oauth2proxy.config.clients[4].clientId=cash \\
+                                     --set oauth2proxy.config.clients[4].clientSecret=${KEYCLOAK_CASH_SECRET} \\
+                                     --set oauth2proxy.config.clients[4].upstream="http://{{ .Release.Name }}-cash:9050" \\
+                                     --set oauth2proxy.config.clients[5].clientId=transfer \\
+                                     --set oauth2proxy.config.clients[5].clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
+                                     --set oauth2proxy.config.clients[5].upstream="http://{{ .Release.Name }}-transfer:9090" \\
+                                     --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
+                                     --set blocker.image.tag=${IMAGE_TAG} \\
+                                     --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
+                                     --set cash.image.tag=${IMAGE_TAG} \\
+                                     --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
+                                     --set exchange.image.tag=${IMAGE_TAG} \\
+                                     --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
+                                     --set notifications.image.tag=${IMAGE_TAG} \\
                                      --set transfer.image.repository=${DOCKER_REGISTRY}/transfer \\
                                      --set transfer.image.tag=${IMAGE_TAG} \\
-                                     --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                                     --set transfer-proxy.image.tag=${IMAGE_TAG} \\
-                                     --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
-                					 --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
-                					 --set exchangegenerator.image.tag=${IMAGE_TAG} \\
-                					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
-                					 --set front.image.tag=${IMAGE_TAG} \\
-                					 --set front.ingress.hosts[0].host=main.test.local \\
-                					 --set front.ingress.hosts[0].paths[0].path="/" \\
+                                     --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                                     --set exchangegenerator.image.tag=${IMAGE_TAG} \\
+                                     --set front.image.repository=${DOCKER_REGISTRY}/front \\
+                                     --set front.image.tag=${IMAGE_TAG} \\
+                                     --set front.ingress.hosts[0].host=main.test.local \\
+                                     --set front.ingress.hosts[0].paths[0].path="/" \\
                                      --set front.ingress.hosts[0].paths[0].pathType="Prefix"
+
+                kubectl -n test delete deploy bank-app-cash
+                kubectl -n test delete deploy bank-app-transfer
+                kubectl -n test delete deploy bank-app-exchange
+                kubectl -n test delete deploy bank-app-exchangegenerator
+                kubectl -n test delete deploy bank-app-blocker
+                kubectl -n test delete deploy bank-app-notifications
+                kubectl -n test delete deploy bank-app-streams
                 """
             }
         }
@@ -121,47 +148,50 @@ pipeline {
                 helm upgrade --install bank-app bank-app/. \\
                                      --namespace prod --create-namespace \\
                                      --set main-db.auth.password=${DB_PASSWORD} \\
-                					 --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
-                					 --set accounts.image.tag=${IMAGE_TAG} \\
-                					 --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
+                                     --set accounts.image.repository=${DOCKER_REGISTRY}/accounts \\
+                                     --set accounts.image.tag=${IMAGE_TAG} \\
+                                     --set streams.image.repository=${DOCKER_REGISTRY}/streams \\
                                      --set streams.image.tag=${IMAGE_TAG} \\
-                					 --set accounts-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set accounts-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set accounts-proxy.config.clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
-                					 --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
-                					 --set blocker.image.tag=${IMAGE_TAG} \\
-                					 --set blocker-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set blocker-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set blocker-proxy.config.clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
-                					 --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
-                					 --set cash.image.tag=${IMAGE_TAG} \\
-                					 --set cash-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set cash-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set cash-proxy.config.clientSecret=${KEYCLOAK_CASH_SECRET} \\
-                					 --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
-                					 --set exchange.image.tag=${IMAGE_TAG} \\
-                					 --set exchange-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set exchange-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set exchange-proxy.config.clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
-                					 --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
-                					 --set notifications.image.tag=${IMAGE_TAG} \\
-                					 --set notifications-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                					 --set notifications-proxy.image.tag=${IMAGE_TAG} \\
-                					 --set notifications-proxy.config.clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set oauth2proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
+                                     --set oauth2proxy.image.tag=${IMAGE_TAG} \\
+                                     --set oauth2proxy.config.clients[0].clientId=accounts \\
+                                     --set oauth2proxy.config.clients[0].clientSecret=${KEYCLOAK_ACCOUNTS_SECRET} \\
+                                     --set oauth2proxy.config.clients[0].upstream="http://{{ .Release.Name }}-accounts:9000" \\
+                                     --set oauth2proxy.config.clients[1].clientId=blocker \\
+                                     --set oauth2proxy.config.clients[1].clientSecret=${KEYCLOAK_BLOCKER_SECRET} \\
+                                     --set oauth2proxy.config.clients[1].upstream="http://{{ .Release.Name }}-blocker:9010" \\
+                                     --set oauth2proxy.config.clients[2].clientId=exchange \\
+                                     --set oauth2proxy.config.clients[2].clientSecret=${KEYCLOAK_EXCHANGE_SECRET} \\
+                                     --set oauth2proxy.config.clients[2].upstream="http://{{ .Release.Name }}-exchange:9010" \\
+                                     --set oauth2proxy.config.clients[3].clientId=notifications \\
+                                     --set oauth2proxy.config.clients[3].clientSecret=${KEYCLOAK_NOTIFICATIONS_SECRET} \\
+                                     --set oauth2proxy.config.clients[3].upstream="http://{{ .Release.Name }}-notifications:9020" \\
+                                     --set oauth2proxy.config.clients[4].clientId=cash \\
+                                     --set oauth2proxy.config.clients[4].clientSecret=${KEYCLOAK_CASH_SECRET} \\
+                                     --set oauth2proxy.config.clients[4].upstream="http://{{ .Release.Name }}-cash:9050" \\
+                                     --set oauth2proxy.config.clients[5].clientId=transfer \\
+                                     --set oauth2proxy.config.clients[5].clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
+                                     --set oauth2proxy.config.clients[5].upstream="http://{{ .Release.Name }}-transfer:9090" \\
+                                     --set blocker.image.repository=${DOCKER_REGISTRY}/blocker \\
+                                     --set blocker.image.tag=${IMAGE_TAG} \\
+                                     --set cash.image.repository=${DOCKER_REGISTRY}/cash \\
+                                     --set cash.image.tag=${IMAGE_TAG} \\
+                                     --set exchange.image.repository=${DOCKER_REGISTRY}/exchange \\
+                                     --set exchange.image.tag=${IMAGE_TAG} \\
+                                     --set notifications.image.repository=${DOCKER_REGISTRY}/notifications \\
+                                     --set notifications.image.tag=${IMAGE_TAG} \\
                                      --set transfer.image.repository=${DOCKER_REGISTRY}/transfer \\
                                      --set transfer.image.tag=${IMAGE_TAG} \\
-                                     --set transfer-proxy.image.repository=${DOCKER_REGISTRY}/oauth2-proxy \\
-                                     --set transfer-proxy.image.tag=${IMAGE_TAG} \\
-                                     --set transfer-proxy.config.clientSecret=${KEYCLOAK_TRANSFER_SECRET} \\
-                					 --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
-                					 --set exchangegenerator.image.tag=${IMAGE_TAG} \\
-                					 --set front.image.repository=${DOCKER_REGISTRY}/front \\
-                					 --set front.image.tag=${IMAGE_TAG} \\
+                                     --set exchangegenerator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                                     --set exchangegenerator.image.tag=${IMAGE_TAG} \\
+                                     --set front.image.repository=${DOCKER_REGISTRY}/front \\
+                                     --set front.image.tag=${IMAGE_TAG} \\
                 					 --set front.ingress.hosts[0].host=main.prod.local \\
                 					 --set front.ingress.hosts[0].paths[0].path="/" \\
                                      --set front.ingress.hosts[0].paths[0].pathType="Prefix"
                 """
             }
         }
+
     }
 }

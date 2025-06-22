@@ -1,0 +1,31 @@
+apiVersion: v2
+name: monitoring
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.16.0"
+
+dependencies:
+  - name: kibana
+    version: "8.5.1"
+    repository: "https://helm.elastic.co"
+    condition: kibana.enabled
+
+  - name: kube-prometheus-stack
+    version: "75.2.1"
+    repository: "https://prometheus-community.github.io/helm-charts"
+
+  - name: zipkin
+    version: "1.3.5"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+
+  - name: logstash
+    version: "8.5.1"
+    repository: "https://helm.elastic.co"
+
+  - name: elasticsearch
+    version: "8.5.1"
+    repository: "https://helm.elastic.co"

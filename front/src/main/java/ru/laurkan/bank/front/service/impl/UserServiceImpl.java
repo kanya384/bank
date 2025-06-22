@@ -1,6 +1,7 @@
 package ru.laurkan.bank.front.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -15,6 +16,7 @@ import ru.laurkan.bank.front.dto.user.*;
 import ru.laurkan.bank.front.mapper.UserMapper;
 import ru.laurkan.bank.front.service.UserService;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, ReactiveUserDetailsService {
@@ -42,18 +44,27 @@ public class UserServiceImpl implements UserService, ReactiveUserDetailsService 
     public Mono<UserResponseDTO> register(RegisterUserRequestDTO request) {
         return accountsClient
                 .registerUser(userMapper.map(request))
+                .doOnError(e -> {
+                    log.error("error register user: {}", e.getMessage());
+                })
                 .map(userMapper::map);
     }
 
     @Override
     public Mono<UserResponseDTO> update(Long userId, UpdateUserRequestDTO request) {
         return accountsClient.updateUser(userId, userMapper.map(request))
+                .doOnError(e -> {
+                    log.error("error update user: {}", e.getMessage());
+                })
                 .map(userMapper::map);
     }
 
     @Override
     public Mono<UserResponseDTO> changePassword(Long userId, ChangePasswordRequestDTO request) {
         return accountsClient.changePassword(userId, userMapper.map(request))
+                .doOnError(e -> {
+                    log.error("error change password of user: {}", e.getMessage());
+                })
                 .map(userMapper::map);
     }
 

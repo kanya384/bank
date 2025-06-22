@@ -1,6 +1,5 @@
 server:
   port: 8070
-upstream-uri: ${UPSTREAM_URI}
 spring:
   application:
     name: oauth2-proxy
@@ -16,13 +15,18 @@ spring:
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_URI}
-        registration:
-          default:
-            provider: keycloak
-            client-id: ${SPRING_CLIENT_ID}
-            client-secret: ${SPRING_CLIENT_SECRET}
-            scope: profile
-            authorization-grant-type: client_credentials
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    enabled: false
+    sampling:
+      probability: 1 # Сэмплируем все запросы
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 logging:
   level:
     org:

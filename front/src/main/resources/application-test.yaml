@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
 clients:
   accounts:
     uri: http://localhost:9000
@@ -9,3 +9,7 @@ clients:
     uri: http://localhost:9000/cash
   transfer:
     uri: http://localhost:9000/transfer
+management:
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans

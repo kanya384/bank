@@ -1,6 +1,7 @@
 package ru.laurkan.bank.exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +15,7 @@ import ru.laurkan.bank.exchange.service.ExchangeService;
 
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService {
@@ -34,12 +36,19 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Flux<ExchangeRateResponseDTO> save(List<ExchangeRateEventItem> exchangeRates) {
+        log.debug("exchange rates update request received: {}", exchangeRates);
         return Flux.fromIterable(exchangeRates)
                 .map(exchangeMapper::map)
                 .collectList()
                 .flatMap(this::setIdsForExistingRates)
                 .flatMapMany(exchangeRepository::saveAll)
-                .map(exchangeMapper::map);
+                .doOnError(e -> {
+                    log.error("error store exchange rate {}", e.getMessage());
+                })
+                .map(exchangeMapper::map)
+                .doOnNext(exchangeRateResponseDTO -> {
+                    log.info("exchange rate saved {}", exchangeRateResponseDTO);
+                });
     }
 
     private Mono<List<ExchangeRate>> setIdsForExistingRates(List<ExchangeRate> exchangeRates) {

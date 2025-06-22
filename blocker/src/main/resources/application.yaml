@@ -11,3 +11,15 @@ spring:
   cloud:
     consul:
       enabled: false
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1 # Сэмплируем все запросы
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

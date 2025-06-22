@@ -36,3 +36,15 @@ spring:
       group-id: notifications-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+management:
+  zipkin:
+    tracing:
+      endpoint:  ${ZIPKIN_ENDPOINT}
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1 # Сэмплируем все запросы
+  endpoints:
+    web:
+      exposure:
+        include: prometheus

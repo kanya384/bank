@@ -1,5 +1,6 @@
 package ru.laurkan.bank.cash.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Data
 public abstract class Transaction {
     @Id
     private Long id;

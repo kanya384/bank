@@ -13,12 +13,6 @@ data:
   {{- end }}
   {{- end }}
 
-  # Example: How Spring Boot might consume DB config (adjust keys as needed)
-  # Ensure these keys match what your application expects.
-  # Note: The values come from .Values.config which are set by the umbrella chart.
-  # Use the 'tpl' function to render the database_url which contains Helm templating itself
   KEYCLOAK_URL: {{ tpl .Values.config.keycloak_url . | quote }}
-  # SPRING_DATASOURCE_PASSWORD would typically come from a secret, not this ConfigMap.
-
-  # Example: Include other config defined in values.yaml
-  # OTHER_CONFIG_PARAM: {{ .Values.config.some_other_config | quote }}
+  KAFKA_URL: {{ tpl .Values.config.kafka_url . | quote }}
+  ZIPKIN_ENDPOINT: {{ tpl .Values.config.zipkin_endpoint . | quote }}
