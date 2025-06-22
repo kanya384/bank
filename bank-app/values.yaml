@@ -95,35 +95,11 @@ oauth2proxy:
     className: "nginx"
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-      #nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
     hosts:
       - host: ingress-nginx-controller.ingress-nginx
         paths:
-          - path: /accounts(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /blocker(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /exchange(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /notifications(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /cash(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /transfer(/|$)(.*)
-            pathType: ImplementationSpecific
-      - host: main.test.local
-        paths:
-          - path: /accounts(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /blocker(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /exchange(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /notifications(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /cash(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /transfer(/|$)(.*)
+          - path: /api(/|$)(.*)
             pathType: ImplementationSpecific
     tls: []
   config:
@@ -133,7 +109,7 @@ oauth2proxy:
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"
     clients:
       - clientId: accounts
-        clientSecret: topsecret
+        clientSecret: 9V0lSamz0dVGYuxKi42WU7gQ3hXldNJO
         upstream: "http://{{ .Release.Name }}-accounts:9000"
       - clientId: blocker
         clientSecret: topsecret
@@ -269,6 +245,6 @@ front:
     port: 80
   config:
     keycloak_url: http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/certs
-    gateway_url: "http://ingress-nginx-controller.ingress-nginx"
+    gateway_url: "http://ingress-nginx-controller.ingress-nginx/api"
     kafka_url: "http://{{ .Release.Name }}-kafka-controller-0.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-1.{{ .Release.Name }}-kafka-controller-headless:9092,http://{{ .Release.Name }}-kafka-controller-2.{{ .Release.Name }}-kafka-controller-headless:9092"
     zipkin_endpoint: "http://monitoring-zipkin.monitoring.svc.cluster.local:9411/api/v2/spans"

@@ -1,14 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "accounts.fullname" . }}
+  name: {{ include "exchange.fullname" . }}
   labels:
     release: monitoring
-    app: accounts
 spec:
   selector:
     matchLabels:
-      {{- include "accounts.selectorLabels" . | nindent 6 }}
+      {{- include "exchange.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

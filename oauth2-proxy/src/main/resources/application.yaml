@@ -23,6 +23,10 @@ management:
     enabled: false
     sampling:
       probability: 1 # Сэмплируем все запросы
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 logging:
   level:
     org:

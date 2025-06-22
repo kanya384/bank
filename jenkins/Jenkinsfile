@@ -124,6 +124,14 @@ pipeline {
                                      --set front.ingress.hosts[0].host=main.test.local \\
                                      --set front.ingress.hosts[0].paths[0].path="/" \\
                                      --set front.ingress.hosts[0].paths[0].pathType="Prefix"
+
+                kubectl -n test delete deploy bank-app-cash
+                kubectl -n test delete deploy bank-app-transfer
+                kubectl -n test delete deploy bank-app-exchange
+                kubectl -n test delete deploy bank-app-exchangegenerator
+                kubectl -n test delete deploy bank-app-blocker
+                kubectl -n test delete deploy bank-app-notifications
+                kubectl -n test delete deploy bank-app-streams
                 """
             }
         }
